@@ -1,0 +1,27 @@
+<nav class="nav">
+  <div class="float-left">
+    NGWEATHER
+  </div>
+  <div class="float-right">
+    <img (click)="toggleMenu(menu)" class="hamburger-menu" src="/assets/img/hamburger-menu.svg" alt="Menu Icon">
+  </div>
+  <div class="float-right">
+    <menu #menu id="menu" class="menu" [hidden] type="toolbar">
+      <ul class="menu-list">
+        <a href="#" class="menu-list__link">
+          <li class="menu-list__item">Home</li>
+        </a>
+        <a href="#" class="menu-list__link">
+          <li class="menu-list__item">Current Weather</li>
+        </a>
+        <a href="#" class="menu-list__link">
+          <li class="menu-list__item">Forecast</li>
+        </a>
+        <a href="#" class="menu-list__link">
+          <li class="menu-list__item">Graphs</li>
+        </a>
+      </ul>
+    </menu>
+  </div>
+</nav>
+
