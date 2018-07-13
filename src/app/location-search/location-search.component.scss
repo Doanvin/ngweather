@@ -1,0 +1,13 @@
+input#location-search {
+    width: 100%;
+}
+
+button#search-button {
+    margin-top: 10px;
+}
+
+@media screen and (min-width: 540px) {
+    button#search-button {
+        margin-top: 0;
+    }
+}

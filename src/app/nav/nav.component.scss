@@ -1,21 +1,47 @@
+@import "../../styles";
+
 .nav {
-    background-color: aqua;
     min-height: 75px;
-    width: 100vw;
+   
+    &__title {
+        font-size: 2rem;
+    }
+
+    &__logo {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        font-size: 1rem;
+    }
+
+    &__menu-icon {
+        background-repeat: no-repeat;
+        height: 32px;
+        width: 32px;
+    }
+
+    &__menu-icon-wrapper {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin: .25rem 0; 
+    }
 }
+
+@media screen and (min-width: 540px) {
+    .nav__logo {
+        display: inline-block;
+        text-align: center;
+    }
+}
+
 
 .menu {
     background-color: azure;
+    z-index: 1;
+    grid-column-start: 2;
 }
 
 .hamburger-menu:hover {
     cursor: pointer;
-}
-
-.float-left {
-    float: left;
-}
-
-.float-right {
-    float: right;
 }

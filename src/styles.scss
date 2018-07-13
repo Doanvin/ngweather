@@ -1,1 +1,32 @@
-/* You can add global styles to this file, and also import other style files */
+// OVERRIDE DEFAULT VARIABLES
+@import "./assets/scss/variable-settings";
+
+// IMPORT GRID
+@import "./assets/scss/bootstrap-grid-reboot";
+
+// .section {
+//     display: flex;
+//     flex-direction: row;
+//     flex-wrap: wrap;
+//   }
+  
+//   .article,
+//   .aside {
+//     flex-basis: 100%;
+//   }
+  
+//   @media screen and (min-width: 800px) {
+//     .aside {
+//       flex: 2.5; // 25% of its container
+//     }
+  
+//     .article {
+//       flex: 7.5; //75% of its container
+//     }
+//   }
+  
+//   @media screen and (max-width: 800px) {
+//     .aside {
+//       margin-top: $grid-col-padding*3;
+//     }
+//   }
