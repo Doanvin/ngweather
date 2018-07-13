@@ -6,6 +6,9 @@ import { NavComponent } from './nav/nav.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { LocationSearchComponent } from './location-search/location-search.component';
 import { WeatherCurrentComponent } from './weather-current/weather-current.component';
+import { HttpClientModule } from '@angular/common/http';
+import { WeatherService } from './weather.service';
+import { StoreService } from './store.service';
 
 @NgModule({
   declarations: [
@@ -16,9 +19,13 @@ import { WeatherCurrentComponent } from './weather-current/weather-current.compo
     WeatherCurrentComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    WeatherService,
+    StoreService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
