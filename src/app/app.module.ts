@@ -1,14 +1,20 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { Routes, RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { LocationSearchComponent } from './location-search/location-search.component';
 import { WeatherCurrentComponent } from './weather-current/weather-current.component';
-import { HttpClientModule } from '@angular/common/http';
 import { WeatherService } from './weather.service';
 import { StoreService } from './store.service';
+
+const appRoutes: Routes = [
+  { path: '', component: WelcomeComponent },
+  // { path: 'search/current', component: WeatherCurrentComponent}
+]
 
 @NgModule({
   declarations: [
@@ -20,6 +26,7 @@ import { StoreService } from './store.service';
   ],
   imports: [
     BrowserModule,
+    RouterModule.forRoot(appRoutes),
     HttpClientModule
   ],
   providers: [
