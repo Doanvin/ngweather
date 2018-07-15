@@ -19,12 +19,15 @@ export class WeatherService {
     time: Date;
 
     constructor(public store: StoreService, public http: HttpClient) {
-        this.location = JSON.parse(localStorage.getItem('location')) || '';
+        this.location = this.store.get('location') || '';
         this.latitude = this.location.latitude || 0;
         this.longitude = this.location.longitude || 0;
         this.city = this.location.city || '';
         this.region_code = this.location.region_code || '';
-        this.time = this.store.get('time') || new Date(0);
+        this.time = new Date(this.store.get('time'));
+        this.currently = this.store.get('currently') || {};
+        this.hourly = this.store.get('hourly') || {};
+        this.daily = this.store.get('daily') || {};
     }
 
     setLocation(location: Location) {
@@ -88,17 +91,7 @@ export class WeatherService {
     // calls the darksky weather api, updates service data, saves api call time to localStorage
     apiForecast(exclude?: string, ) {
         let url = `http://localhost:8888/search?latitude=${this.latitude}&longitude=${this.longitude}`;
-        console.log('darksky forecast api called');
         return this.http.get(url);
-            // .subscribe(
-            //     o => {
-            //         this.currently = o['currently'];
-            //         this.hourly = o['hourly'];
-            //         this.daily = o['daily'];
-            //         this.time = o['currently']['time'];
-            //         this.store.set('time', this.time);
-            //     }
-            // );
     }
 
     parseForecast(o: object) {
@@ -106,13 +99,19 @@ export class WeatherService {
         this.hourly = o['hourly'];
         this.daily = o['daily'];
         this.time = o['currently']['time'];
-        this.store.set('time', this.time);
+        this.store.bulkSet([
+            {currently: this.currently},
+            {hourly: this.hourly},
+            {daily: this.daily},
+            {time: this.time}
+        ]);
     }
 
     withinOneHour() {
         const one_hour = 60 * 60 * 1000;
-        const now: any = new Date();
-        const last_query_time: any = this.time;
+        let now: any = new Date();
+        now = now.getTime();
+        const last_query_time: any = this.time.getTime()*1000;
         return (now - last_query_time) < one_hour;
     }
 
@@ -121,7 +120,7 @@ export class WeatherService {
     }
 
     hasCurrently() {
-        return this.currently && this.currently !== undefined;
+        return this.currently ? true : false;
     }
 
 }                                                                                         

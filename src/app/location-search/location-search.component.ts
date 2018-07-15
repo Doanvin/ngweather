@@ -1,9 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 
 import { WeatherService } from '../weather.service';
 import { StoreService } from '../store.service';
-import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,7 +11,7 @@ import { Router } from '@angular/router';
 })
 export class LocationSearchComponent implements OnInit {
     first_time: boolean;
-    subscription: Subscription;
+    // subscription: Subscription;
 
     constructor(public weatherS: WeatherService, 
                 public store: StoreService,
@@ -48,9 +46,9 @@ export class LocationSearchComponent implements OnInit {
         this.weatherS.apiGeoLocation(text_location);
     }
 
-    ngOnDestroy() {
-        // prevent memory leak when component destroyed
-        this.subscription.unsubscribe();
-    }
+    // ngOnDestroy() {
+    //     // prevent memory leak when component destroyed
+    //     this.subscription.unsubscribe();
+    // }
 
 }
