@@ -15,10 +15,9 @@ export class LocationSearchComponent implements OnInit {
     first_time: boolean;
     subscription: Subscription;
 
-    constructor(private http: HttpClient, 
-                public weatherS: WeatherService, 
+    constructor(public weatherS: WeatherService, 
                 public store: StoreService,
-                private router: Router) { }
+                public router: Router) { }
 
     ngOnInit() {
         this.first_time = this.weatherS.latitude ? false : true;
@@ -29,14 +28,13 @@ export class LocationSearchComponent implements OnInit {
         }
 
         // check if location has been set, search weather using lat long if true 
-        if (this.weatherS.latitude && this.weatherS.longitude) {
+        if (this.weatherS.hasLocation) {
             this.searchLatLong();
         }
     }
 
     // search weather by latitude and longitude
     searchLatLong() {
-        // this.weatherS.apiForecast(latitude, longitude);
         this.router.navigate([
             '/search/current', 
             this.weatherS.city, 

@@ -87,25 +87,26 @@ export class WeatherService {
 
     // calls the darksky weather api, updates service data, saves api call time to localStorage
     apiForecast(exclude?: string, ) {
-        let url = `https://api.darksky.net/forecast/c1cfff522b5da01ab9a3d56a1fb53a20/${this.latitude},${this.longitude}`;
-        const httpOptions = {
-            headers: new HttpHeaders({
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, OPTIONS",
-                "Accept": "json, jsonp"
-            })
-        }
+        let url = `http://localhost:8888/search?latitude=${this.latitude}&longitude=${this.longitude}`;
         console.log('darksky forecast api called');
-        this.http.get(url, httpOptions)
-            .subscribe(
-                o => {
-                    this.currently = o['currently'];
-                    this.hourly = o['hourly'];
-                    this.daily = o['daily'];
-                    this.time = o['currently']['time'];
-                    this.store.set('time', this.time);
-                }
-            );
+        return this.http.get(url);
+            // .subscribe(
+            //     o => {
+            //         this.currently = o['currently'];
+            //         this.hourly = o['hourly'];
+            //         this.daily = o['daily'];
+            //         this.time = o['currently']['time'];
+            //         this.store.set('time', this.time);
+            //     }
+            // );
+    }
+
+    parseForecast(o: object) {
+        this.currently = o['currently'];
+        this.hourly = o['hourly'];
+        this.daily = o['daily'];
+        this.time = o['currently']['time'];
+        this.store.set('time', this.time);
     }
 
     withinOneHour() {
@@ -113,6 +114,14 @@ export class WeatherService {
         const now: any = new Date();
         const last_query_time: any = this.time;
         return (now - last_query_time) < one_hour;
+    }
+
+    hasLocation() {
+        return this.latitude && this.longitude ? true : false;
+    }
+
+    hasCurrently() {
+        return this.currently && this.currently !== undefined;
     }
 
 }                                                                                         
