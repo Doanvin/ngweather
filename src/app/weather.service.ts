@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { StoreService } from './store.service';
 import { Location } from './models/location.model';
@@ -30,7 +30,7 @@ export class WeatherService {
     setLocation(location: Location) {
         this.location = location;
         this.store.set('location', location);
-        console.log('location set successful');
+        console.log('location set successfully');
         return true;
     }
 
@@ -70,15 +70,11 @@ export class WeatherService {
         this.http.get(url)
             .subscribe(
                 o => {
-                    const one_hour = 60 * 60 * 1000;
-                    const now: any = new Date();
-                    const last_query_time: any = this.time;
-
-                    if ((now - last_query_time) < one_hour) {
+                    if (this.withinOneHour) {
                         console.log('WITHIN AN HOUR. RESULTS STILL VALID');
                     } else {
                         this.location.city = o['query']['results']['channel']['location']['city'];
-                        this.location.region_code = o['query']['results']['channel']['location']['region'];
+                        this.location.region_code = o['query']['results']['channel']['location']['region'].toUpperCase();
                         this.location.latitude = o['query']['results']['channel']['item']['lat'];
                         this.location.longitude = o['query']['results']['channel']['item']['long'];
                         this.time = new Date(o['query']['created']);
@@ -90,10 +86,17 @@ export class WeatherService {
     }
 
     // calls the darksky weather api, updates service data, saves api call time to localStorage
-    apiForecast(latitude: number, longitude: number, exclude?: string, ) {
-        let url = `https://api.darksky.net/forecast/0123456789abcdef9876543210fedcba/${latitude},${longitude}`;
+    apiForecast(exclude?: string, ) {
+        let url = `https://api.darksky.net/forecast/c1cfff522b5da01ab9a3d56a1fb53a20/${this.latitude},${this.longitude}`;
+        const httpOptions = {
+            headers: new HttpHeaders({
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, OPTIONS",
+                "Accept": "json, jsonp"
+            })
+        }
         console.log('darksky forecast api called');
-        this.http.get(url)
+        this.http.get(url, httpOptions)
             .subscribe(
                 o => {
                     this.currently = o['currently'];
@@ -103,6 +106,13 @@ export class WeatherService {
                     this.store.set('time', this.time);
                 }
             );
+    }
+
+    withinOneHour() {
+        const one_hour = 60 * 60 * 1000;
+        const now: any = new Date();
+        const last_query_time: any = this.time;
+        return (now - last_query_time) < one_hour;
     }
 
 }                                                                                         

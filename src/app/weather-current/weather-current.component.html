@@ -1,3 +1,26 @@
-<p>
-  weather-current works!
-</p>
+<div class="container-fluid">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <p>
+          weather-current works!
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <ul>
+          <li>Summary: {{ summary }}</li>
+          <li>Icon: {{ icon }}</li>
+          <li>Temperature: {{ temp }}</li>
+          <li>Feels Like: {{ apparent_temp }}</li>
+          <li>There's a {{ precip_probability }}% chance of {{ precip_type }}</li>
+          <li>Pressure: {{ pressure }}mmHg</li>
+          <li>Wind Speed: {{ wind_speed }}mph</li>
+          <li>UV Index: {{ uv_index }}</li>
+          <li>Ozone: {{ ozone }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

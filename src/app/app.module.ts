@@ -13,7 +13,7 @@ import { StoreService } from './store.service';
 
 const appRoutes: Routes = [
   { path: '', component: WelcomeComponent },
-  // { path: 'search/current', component: WeatherCurrentComponent}
+  { path: 'search/current/:city/:region_code', component: WeatherCurrentComponent}
 ]
 
 @NgModule({

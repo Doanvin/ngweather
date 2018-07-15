@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { WeatherService } from '../weather.service';
 import { StoreService } from '../store.service';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-location-search',
@@ -14,7 +15,10 @@ export class LocationSearchComponent implements OnInit {
     first_time: boolean;
     subscription: Subscription;
 
-    constructor(private http: HttpClient, public weatherS: WeatherService, public store: StoreService) { }
+    constructor(private http: HttpClient, 
+                public weatherS: WeatherService, 
+                public store: StoreService,
+                private router: Router) { }
 
     ngOnInit() {
         this.first_time = this.weatherS.latitude ? false : true;
@@ -24,19 +28,21 @@ export class LocationSearchComponent implements OnInit {
             this.weatherS.apiIpSearch();
         }
 
-        // check if location has been set and 
+        // check if location has been set, search weather using lat long if true 
         if (this.weatherS.latitude && this.weatherS.longitude) {
-            this.searchLatLong(
-                this.weatherS.latitude,
-                this.weatherS.longitude
-            );
+            this.searchLatLong();
         }
     }
 
     // search weather by latitude and longitude
-    searchLatLong(latitude: number, longitude: number) {
+    searchLatLong() {
         // this.weatherS.apiForecast(latitude, longitude);
-        console.log(latitude, longitude);
+        this.router.navigate([
+            '/search/current', 
+            this.weatherS.city, 
+            this.weatherS.region_code
+        ]);
+        console.log(this.weatherS.latitude, this.weatherS.longitude);
     }
 
     // search weather by city, state || zip
