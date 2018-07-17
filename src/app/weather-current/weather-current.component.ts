@@ -10,6 +10,8 @@ declare var Skycons: any;
     styleUrls: ['./weather-current.component.scss']
 })
 export class WeatherCurrentComponent implements OnInit {
+    city: string;
+    region_code: string;
     summary: string;
     icon: string;
     temp: number;
@@ -28,28 +30,53 @@ export class WeatherCurrentComponent implements OnInit {
     constructor(private route: ActivatedRoute, public weatherS: WeatherService) { }
 
     ngOnInit() {
+        this.city = this.route.snapshot.params['city'];
+        this.region_code = this.route.snapshot.params['region_code'];
+
+        // subscribe to url changes and 
+        this.route.params
+            .subscribe(
+                params => {
+                    this.city = params['city'];
+                    this.region_code = params['region_code'];
+                }
+            );
+
         // check if we already have recent forecast data to avoid excessive api calls
-        if (this.weatherS.withinOneHour()
-            && this.weatherS.hasLocation()
+        if (this.weatherS.hasLocation()
+            && this.locationMatches()
+            && this.weatherS.withinTenMinutes()
             && this.weatherS.hasCurrently()) {
                 this.setLocalVariables();
                 console.log('We have recent weather data to use!');
+
+        // check for correct location but no recent data
+        } else if (this.weatherS.hasLocation() 
+                && this.locationMatches() 
+                && this.weatherS.withinTenMinutes() == false) {
+            this.weatherS.apiForecast()
+                .subscribe(
+                    o => {
+                        console.log('darksky forecast api called from 1st else if');
+                        this.weatherS.parseForecast(o);
+                        this.setLocalVariables();
+                    }
+                );
+
+        // call location search api, call weather forecast api, parse data, and setup local variables for DOM use
         } else {
-            // call weather forecast api, parse data, and setup local variables for DOM use
-            console.log(`Within One Hour: ${this.weatherS.withinOneHour()}\
-            Has Location: ${this.weatherS.hasLocation()}\
-            Has Currently: ${this.weatherS.hasCurrently()}`
-            );
+            this.weatherS.apiGeoLocation([this.city, this.region_code].join(', '));
             this.weatherS.apiForecast()
             .subscribe(
                 o => {
-                    console.log('darksky forecast api called');
-                    
+                    console.log('darksky forecast api called from 2nd else if');
                     this.weatherS.parseForecast(o);
                     this.setLocalVariables();
                 }
             );
-        } 
+
+        }
+
     }
 
     setLocalVariables() {
@@ -74,6 +101,11 @@ export class WeatherCurrentComponent implements OnInit {
         let icon = this.icon.toUpperCase().replace(/-/g, "_");
         skycons.add('icon', Skycons[icon]);
         skycons.play();
+    }
+
+    locationMatches() {
+        return this.weatherS.location.city == this.city
+            && this.weatherS.location.region_code == this.region_code;
     }
 
 

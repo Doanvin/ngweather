@@ -3,6 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { StoreService } from './store.service';
 import { Location } from './models/location.model';
+import { environment } from '../environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable({
     providedIn: 'root'
@@ -11,19 +13,16 @@ export class WeatherService {
     location: any;
     latitude: number;
     longitude: number;
-    city: string;
     region_code: string;
     currently: object;
     hourly: object;
     daily: object;
     time: Date;
 
-    constructor(public store: StoreService, public http: HttpClient) {
+    constructor(public store: StoreService, 
+                public http: HttpClient, 
+                public router: Router) {
         this.location = this.store.get('location') || '';
-        this.latitude = this.location.latitude || 0;
-        this.longitude = this.location.longitude || 0;
-        this.city = this.location.city || '';
-        this.region_code = this.location.region_code || '';
         this.time = new Date(this.store.get('time'));
         this.currently = this.store.get('currently') || {};
         this.hourly = this.store.get('hourly') || {};
@@ -39,6 +38,16 @@ export class WeatherService {
 
     getLocation() {
         return this.store.get('location');
+    }
+
+    setTime(time: Date) {
+        this.time = time;
+        this.store.set('time', time);
+        return true;
+    }
+
+    getTime() {
+        return new Date(this.store.get('time'));
     }
 
     // calls the ipstack api to get user location data
@@ -73,16 +82,21 @@ export class WeatherService {
         this.http.get(url)
             .subscribe(
                 o => {
-                    if (this.withinOneHour) {
-                        console.log('WITHIN AN HOUR. RESULTS STILL VALID');
+                    location.trim().split(',');
+                    const city = location[0];
+
+                    if (this.location.city == city) {
+                        console.log('SAME LOCATION. RESULTS STILL VALID');
                     } else {
-                        this.location.city = o['query']['results']['channel']['location']['city'];
-                        this.location.region_code = o['query']['results']['channel']['location']['region'].toUpperCase();
-                        this.location.latitude = o['query']['results']['channel']['item']['lat'];
-                        this.location.longitude = o['query']['results']['channel']['item']['long'];
-                        this.time = new Date(o['query']['created']);
-                        this.store.set('location', this.location);
-                        this.store.set('time', this.time);
+                        const location: Location = {
+                            city: o['query']['results']['channel']['location']['city'],
+                            region_code: o['query']['results']['channel']['location']['region'].toUpperCase(),
+                            latitude: o['query']['results']['channel']['item']['lat'],
+                            longitude: o['query']['results']['channel']['item']['long']
+                        };
+                        const time = new Date(o['query']['created']);
+                        this.setLocation(location);
+                        this.setTime(time);
                     }
                 }
             );
@@ -90,7 +104,7 @@ export class WeatherService {
 
     // calls the darksky weather api, updates service data, saves api call time to localStorage
     apiForecast(exclude?: string, ) {
-        let url = `http://localhost:8888/search?latitude=${this.latitude}&longitude=${this.longitude}`;
+        let url = `${environment.server_host}/search?latitude=${this.location.latitude}&longitude=${this.location.longitude}`;
         return this.http.get(url);
     }
 
@@ -107,20 +121,38 @@ export class WeatherService {
         ]);
     }
 
+    navigate(view: string) {
+        const search_view = ['/search',view].join('/');
+        this.router.navigate([
+            search_view, 
+            this.location.city, 
+            this.location.region_code
+        ]);
+        console.log(this.location.latitude, this.location.longitude);
+    }
+
     withinOneHour() {
         const one_hour = 60 * 60 * 1000;
         let now: any = new Date();
         now = now.getTime();
-        const last_query_time: any = this.time.getTime()*1000;
+        const last_query_time: any = this.getTime().getTime()*1000;
         return (now - last_query_time) < one_hour;
     }
 
+    withinTenMinutes() {
+        const ten_minutes = 60 * 10 * 1000;
+        let now: any = new Date();
+        now = now.getTime();
+        const last_query_time: any = this.getTime().getTime()*1000;
+        return (now - last_query_time) < ten_minutes;
+    }
+
     hasLocation() {
-        return this.latitude && this.longitude ? true : false;
+        return this.location.latitude && this.location.longitude ? true : false;
     }
 
     hasCurrently() {
-        return this.currently ? true : false;
+        return this.currently && this.currently !== {} ? true : false;
     }
 
 }                                                                                         

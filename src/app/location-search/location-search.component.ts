@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { WeatherService } from '../weather.service';
 import { StoreService } from '../store.service';
@@ -11,7 +11,6 @@ import { Router } from '@angular/router';
 })
 export class LocationSearchComponent implements OnInit {
     first_time: boolean;
-    // subscription: Subscription;
 
     constructor(public weatherS: WeatherService, 
                 public store: StoreService,
@@ -33,22 +32,12 @@ export class LocationSearchComponent implements OnInit {
 
     // search weather by latitude and longitude
     searchLatLong() {
-        this.router.navigate([
-            '/search/current', 
-            this.weatherS.city, 
-            this.weatherS.region_code
-        ]);
-        console.log(this.weatherS.latitude, this.weatherS.longitude);
+        this.weatherS.navigate('current');
     }
 
     // search weather by city, state || zip
     searchCityZip(text_location: string) {
         this.weatherS.apiGeoLocation(text_location);
     }
-
-    // ngOnDestroy() {
-    //     // prevent memory leak when component destroyed
-    //     this.subscription.unsubscribe();
-    // }
 
 }

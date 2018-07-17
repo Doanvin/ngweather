@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  server_host: 'https://donavin.github.io/portfolio'
 };
