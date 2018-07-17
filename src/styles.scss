@@ -4,29 +4,17 @@
 // IMPORT GRID
 @import "./assets/scss/bootstrap-grid-reboot";
 
-// .section {
-//     display: flex;
-//     flex-direction: row;
-//     flex-wrap: wrap;
-//   }
-  
-//   .article,
-//   .aside {
-//     flex-basis: 100%;
-//   }
-  
-//   @media screen and (min-width: 800px) {
-//     .aside {
-//       flex: 2.5; // 25% of its container
-//     }
-  
-//     .article {
-//       flex: 7.5; //75% of its container
-//     }
-//   }
-  
-//   @media screen and (max-width: 800px) {
-//     .aside {
-//       margin-top: $grid-col-padding*3;
-//     }
-//   }
+.is-card {
+    box-shadow: 0 1px 8px 0 rgba(0,0,0,.2),0 3px 4px 0 rgba(0,0,0,.14),
+                0 3px 3px -2px rgba(0,0,0,.12);
+    border-radius: 2px;
+    padding: 20px;
+
+    &:first-child {
+        margin-top: 0;
+    }
+
+    &--no-padding {
+        padding:0;
+    }
+}
