@@ -1,8 +1,11 @@
 @import "../../styles";
 
 .nav {   
+    padding: 10px 0;
+
     &__title {
         font-size: 2rem;
+        margin-bottom: 0;
     }
 
     &__logo {
@@ -40,14 +43,23 @@
 
 .menu {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     margin: 0;
     width: 100%;
-    background-color: azure;
+    background-color: rgba(145, 199, 234, 0.1);
     z-index: 1;
+    padding-left: 0;
 
     &__list {
-        padding-left: 0;
+        padding: 20px;
+    }
+
+    &__list-link:hover, &__list-link:focus {
+        text-decoration: none;
+    }
+
+    &__list-item:hover, &__list-item:focus {
+        background-color: rgba(255, 178, 152, 0.308);
     }
 }
 

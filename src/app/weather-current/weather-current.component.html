@@ -25,15 +25,12 @@
 
     <div class="row  mt-3 mb-3 is-card is-card--no-padding">
         <ul class="ul">
-          <li class="li">Wind Speed: {{ wind_speed }} mph</li>
-          <li class="li">Feels Like: {{ apparent_temp }} &deg;F</li>
-          <li class="li">Low: {{ temp_low }} &deg;F</li>
-          <li class="li">High: {{ temp_high }} &deg;F</li>
+          <li class="li is-card--top">Wind Speed: {{ wind_speed }} mph</li>
           <li class="li">Humidity: {{ humidity }}%</li>
           <li class="li">There's a {{ precip_probability }}% chance of {{ precip_type }}</li>
           <li class="li">Pressure: {{ pressure }} mmHg</li>
           <li class="li">UV Index: {{ uv_index }}</li>
-          <li class="li">Ozone: {{ ozone }}</li>
+          <li class="li is-card--bottom">Ozone: {{ ozone }}</li>
         </ul>
 
     </div>
