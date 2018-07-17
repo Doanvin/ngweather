@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
 import { WeatherService } from '../weather.service';
+declare var Skycons: any;
 
 @Component({
     selector: 'app-weather-current',
@@ -11,6 +13,8 @@ export class WeatherCurrentComponent implements OnInit {
     summary: string;
     icon: string;
     temp: number;
+    temp_low: number;
+    temp_high: number;
     apparent_temp: number;
     humidity: number;
     precip_probability: number;
@@ -52,13 +56,24 @@ export class WeatherCurrentComponent implements OnInit {
         this.summary = this.weatherS.currently['summary'] || 'Error Retrieving Weather Info';
         this.icon = this.weatherS.currently['icon'] || '';
         this.temp = Math.round(this.weatherS.currently['temperature']) || 0;
-        this.apparent_temp = Math.round(this.weatherS.currently['humidity']);
+        this.temp_low = Math.round(this.weatherS.daily['data'][0]['temperatureLow']) || 0;
+        this.temp_high = Math.round(this.weatherS.daily['data'][0]['temperatureHigh']) || 0;
+        this.apparent_temp = Math.round(this.weatherS.currently['apparentTemperature']) || 0;
+        this.humidity = this.weatherS.currently['humidity'] * 100 || 0;
         this.precip_probability = Math.round(this.weatherS.currently['precipProbability'] * 100) || 0;
-        this.precip_type = this.weatherS.currently['precipType'] || '';
+        this.precip_type = this.weatherS.currently['precipType'] || 'precipitaion';
         this.pressure = Math.round(this.weatherS.currently['pressure']) || 0;
         this.wind_speed = Math.round(this.weatherS.currently['windSpeed']) || 0;
         this.uv_index = this.weatherS.currently['uvIndex'] || 0;
         this.ozone = Math.round(this.weatherS.currently['ozone']) || 0;
+        this.startSkycons();
+    }
+
+    startSkycons() {
+        let skycons = new Skycons({"color": "#D46A6A"});
+        let icon = this.icon.toUpperCase().replace(/-/g, "_");
+        skycons.add('icon', Skycons[icon]);
+        skycons.play();
     }
 
 

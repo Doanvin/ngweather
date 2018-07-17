@@ -1,22 +1,37 @@
 <div class="container-fluid">
   <div class="container">
+
     <div class="row">
-      <div class="col-12">
-        <p>
-          weather-current works!
-        </p>
+      <div class="col-5">
+          <canvas id="icon" width="96" height="96" style="margin:0;"></canvas>
+      </div>
+      <div class="col-7 align-middle">
+        <div class="align-middle temp">
+            {{ temp }} F <br>
+            {{ summary }}
+            
       </div>
     </div>
+
     <div class="row">
       <div class="col-12">
-        <ul>
+        <div>
+            Wind Speed: {{ wind_speed }} <br>
+            Feels Like: {{ apparent_temp }}
+        </div>
+          
+      
+        <ul class="ul">
           <li>Summary: {{ summary }}</li>
           <li>Icon: {{ icon }}</li>
-          <li>Temperature: {{ temp }}</li>
-          <li>Feels Like: {{ apparent_temp }}</li>
+          <li>Temperature: {{ temp }} F</li>
+          <li>Low: {{ temp_low }} F</li>
+          <li>High: {{ temp_high }} F</li>
+          <li>Humidity: {{ humidity }}%</li>
+          <li>Feels Like: {{ apparent_temp }} F</li>
           <li>There's a {{ precip_probability }}% chance of {{ precip_type }}</li>
-          <li>Pressure: {{ pressure }}mmHg</li>
-          <li>Wind Speed: {{ wind_speed }}mph</li>
+          <li>Pressure: {{ pressure }} mmHg</li>
+          <li>Wind Speed: {{ wind_speed }} mph</li>
           <li>UV Index: {{ uv_index }}</li>
           <li>Ozone: {{ ozone }}</li>
         </ul>
