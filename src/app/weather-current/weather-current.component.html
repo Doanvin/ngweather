@@ -1,41 +1,35 @@
-<div class="container-fluid">
+<main id="main" class="container-fluid">
   <div class="container">
 
-    <div class="row">
+    <div class="row pt-3 pb-3">
       <div class="col-5">
-          <canvas id="icon" width="96" height="96" style="margin:0;"></canvas>
+          <canvas id="icon" class="sky-canvas" width="96" height="96"></canvas>
       </div>
-      <div class="col-7 align-middle">
-        <div class="align-middle temp">
-            {{ temp }} F <br>
-            {{ summary }}
-            
+      <div class="col-7">
+        <div class="temp">
+            <h3 class="temp__current">{{ temp }} &deg;F<br>
+              {{ summary }}
+            </h3>
+        </div>
       </div>
     </div>
 
     <div class="row">
       <div class="col-12">
-        <div>
-            Wind Speed: {{ wind_speed }} <br>
-            Feels Like: {{ apparent_temp }}
-        </div>
-          
-      
         <ul class="ul">
-          <li>Summary: {{ summary }}</li>
-          <li>Icon: {{ icon }}</li>
-          <li>Temperature: {{ temp }} F</li>
-          <li>Low: {{ temp_low }} F</li>
-          <li>High: {{ temp_high }} F</li>
-          <li>Humidity: {{ humidity }}%</li>
-          <li>Feels Like: {{ apparent_temp }} F</li>
-          <li>There's a {{ precip_probability }}% chance of {{ precip_type }}</li>
-          <li>Pressure: {{ pressure }} mmHg</li>
-          <li>Wind Speed: {{ wind_speed }} mph</li>
-          <li>UV Index: {{ uv_index }}</li>
-          <li>Ozone: {{ ozone }}</li>
+          <li class="li">Feels Like: {{ apparent_temp }} &deg;F Low: {{ temp_low }} &deg;F High: {{ temp_high }} &deg;F</li>
+          <li class="li">Wind Speed: {{ wind_speed }} mph</li>
+          <li class="li">Feels Like: {{ apparent_temp }} &deg;F</li>
+          <li class="li">Low: {{ temp_low }} &deg;F</li>
+          <li class="li">High: {{ temp_high }} &deg;F</li>
+          <li class="li">Humidity: {{ humidity }}%</li>
+          <li class="li">There's a {{ precip_probability }}% chance of {{ precip_type }}</li>
+          <li class="li">Pressure: {{ pressure }} mmHg</li>
+          <li class="li">UV Index: {{ uv_index }}</li>
+          <li class="li">Ozone: {{ ozone }}</li>
         </ul>
       </div>
     </div>
+  
   </div>
-</div>
+</main>

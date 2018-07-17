@@ -1,8 +1,6 @@
 @import "../../styles";
 
-.nav {
-    min-height: 75px;
-   
+.nav {   
     &__title {
         font-size: 2rem;
     }
@@ -18,6 +16,10 @@
         background-repeat: no-repeat;
         height: 32px;
         width: 32px;
+
+        &:hover {
+            cursor: pointer;
+        }
     }
 
     &__menu-icon-wrapper {
@@ -37,9 +39,16 @@
 
 
 .menu {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0;
+    width: 100%;
     background-color: azure;
     z-index: 1;
-    grid-column-start: 2;
+
+    &__list {
+        padding-left: 0;
+    }
 }
 
 .hamburger-menu:hover {
