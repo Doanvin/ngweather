@@ -32,6 +32,17 @@
             margin-right: 5px;
         }
     }
+
+    &__list {
+        margin-top: 0;
+        padding:0;
+    }
+}
+
+@media screen and (min-width: 480px) {
+    .temp__list {
+        margin-top: 1rem !important;
+    }
 }
 
 .ul {

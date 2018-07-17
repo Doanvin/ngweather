@@ -1,39 +1,42 @@
 <main id="main" class="container-fluid">
   <div class="container">
 
-    <div class="row mt-3 mb-3 is-card">
-      <div class="col-5">
-          <canvas id="icon" class="sky-canvas" width="96" height="96"></canvas>
-      </div>
-      <div class="col-7">
-        <div class="temp">
-          <div class="temp__display">
-              <h3 class="temp__title">{{ temp }} &deg;F</h3>
-              <span class="temp__subtitle">{{ summary }}</span>
-          </div>
+    <div class="row justify-content-around">
+      <div class="col-12 col-sm-6 col-md-5 col-lg-4 mt-3 mb-3 is-card">
+        <div class="row">
+            <div class="col-5">
+                <canvas id="icon" class="sky-canvas" width="96" height="96"></canvas>
+            </div>
+            <div class="col-7">
+              <div class="temp">
+                <div class="temp__display">
+                    <h3 class="temp__title">{{ temp }} &deg;F</h3>
+                    <span class="temp__subtitle">{{ summary }}</span>
+                </div>
+              </div>
+            </div>
+      
+            <div class="temp__subtitle col-12 text-center mt-3">
+                Feels Like: {{ apparent_temp }} &deg;F <br>
+                <span class="temp__extreme temp__extreme--low">Low: {{ temp_low }} &deg;F</span> <span class="temp__extreme temp__extreme--high">High: {{ temp_high }} &deg;F</span>
+            </div>
         </div>
       </div>
 
-      <div class="temp__subtitle col-12 text-center mt-3">
-          Feels Like: {{ apparent_temp }} &deg;F
-      </div>
+      <div class="col-12 col-sm-5 col-md-6 col-lg-7 mb-3 is-card temp__list">
 
-      <div class="temp__subtitle col-12 text-center">
-          <span class="temp__extreme temp__extreme--low">Low: {{ temp_low }} &deg;F</span> <span class="temp__extreme temp__extreme--high">High: {{ temp_high }} &deg;F</span>
-      </div>
+          <ul class="ul">
+            <li class="li is-card--top">Wind Speed: {{ wind_speed }} mph</li>
+            <li class="li">Humidity: {{ humidity }}%</li>
+            <li class="li">There's a {{ precip_probability }}% chance of {{ precip_type }}</li>
+            <li class="li">Pressure: {{ pressure }} mmHg</li>
+            <li class="li">UV Index: {{ uv_index }}</li>
+            <li class="li is-card--bottom">Ozone: {{ ozone }}</li>
+          </ul>
+          </div>
+      
     </div>
 
-    <div class="row  mt-3 mb-3 is-card is-card--no-padding">
-        <ul class="ul">
-          <li class="li is-card--top">Wind Speed: {{ wind_speed }} mph</li>
-          <li class="li">Humidity: {{ humidity }}%</li>
-          <li class="li">There's a {{ precip_probability }}% chance of {{ precip_type }}</li>
-          <li class="li">Pressure: {{ pressure }} mmHg</li>
-          <li class="li">UV Index: {{ uv_index }}</li>
-          <li class="li is-card--bottom">Ozone: {{ ozone }}</li>
-        </ul>
-
-    </div>
   
   </div>
 </main>
