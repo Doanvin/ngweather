@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
 import { WeatherService } from '../weather.service';
-import { StoreService } from '../store.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -11,22 +10,18 @@ import { Router } from '@angular/router';
 })
 export class LocationSearchComponent implements OnInit {
     first_time: boolean;
+    city_region: string;
 
-    constructor(public weatherS: WeatherService, 
-                public store: StoreService,
+    constructor(public weatherS: WeatherService,
                 public router: Router) { }
 
     ngOnInit() {
-        this.first_time = this.weatherS.latitude ? false : true;
+        this.first_time = this.weatherS.location.latitude ? false : true;
+        this.city_region = `${this.weatherS.location.city}, ${this.weatherS.location.region_code}`;
 
         // check if first time user, call location search service if true, save data
         if (this.first_time) {
             this.weatherS.apiIpSearch();
-        }
-
-        // check if location has been set, search weather using lat long if true 
-        if (this.weatherS.hasLocation) {
-            this.searchLatLong();
         }
     }
 
@@ -38,6 +33,9 @@ export class LocationSearchComponent implements OnInit {
     // search weather by city, state || zip
     searchCityZip(text_location: string) {
         this.weatherS.apiGeoLocation(text_location);
+        setTimeout(()=> {
+            this.searchLatLong();
+        }, 2000);
     }
 
 }

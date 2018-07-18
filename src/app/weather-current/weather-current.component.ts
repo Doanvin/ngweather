@@ -30,53 +30,15 @@ export class WeatherCurrentComponent implements OnInit {
     constructor(private route: ActivatedRoute, public weatherS: WeatherService) { }
 
     ngOnInit() {
-        this.city = this.route.snapshot.params['city'];
-        this.region_code = this.route.snapshot.params['region_code'];
-
         // subscribe to url changes and 
         this.route.params
-            .subscribe(
-                params => {
-                    this.city = params['city'];
-                    this.region_code = params['region_code'];
-                }
-            );
-
-        // check if we already have recent forecast data to avoid excessive api calls
-        if (this.weatherS.hasLocation()
-            && this.locationMatches()
-            && this.weatherS.withinTenMinutes()
-            && this.weatherS.hasCurrently()) {
-                this.setLocalVariables();
-                console.log('We have recent weather data to use!');
-
-        // check for correct location but no recent data
-        } else if (this.weatherS.hasLocation() 
-                && this.locationMatches() 
-                && this.weatherS.withinTenMinutes() == false) {
-            this.weatherS.apiForecast()
-                .subscribe(
-                    o => {
-                        console.log('darksky forecast api called from 1st else if');
-                        this.weatherS.parseForecast(o);
-                        this.setLocalVariables();
-                    }
-                );
-
-        // call location search api, call weather forecast api, parse data, and setup local variables for DOM use
-        } else {
-            this.weatherS.apiGeoLocation([this.city, this.region_code].join(', '));
-            this.weatherS.apiForecast()
-            .subscribe(
-                o => {
-                    console.log('darksky forecast api called from 2nd else if');
-                    this.weatherS.parseForecast(o);
-                    this.setLocalVariables();
-                }
-            );
-
-        }
-
+        .subscribe(
+            params => {
+                this.city = params['city'];
+                this.region_code = params['region_code'];
+                this.initiationSequence();
+            }
+        );
     }
 
     setLocalVariables() {
@@ -103,10 +65,68 @@ export class WeatherCurrentComponent implements OnInit {
         skycons.play();
     }
 
-    locationMatches() {
-        return this.weatherS.location.city == this.city
-            && this.weatherS.location.region_code == this.region_code;
+    initiationSequence() {
+         // check if we already have recent forecast data to avoid excessive api calls
+         const check = {
+            has_location: this.weatherS.hasLocation(),
+            location_matches: this.locationMatches(),
+            within_ten_minutes: this.weatherS.withinTenMinutes(),
+            has_currently: this.weatherS.hasCurrently()
+         };
+
+         if (check.has_location
+         && check.location_matches
+         && check.within_ten_minutes
+         && check.has_currently) {
+             console.log(this.weatherS.hasLocation(),
+                 this.locationMatches(),
+                 this.weatherS.hasCurrently(),
+                 this.weatherS.withinTenMinutes()
+             );
+             this.setLocalVariables();
+             console.log('We have recent weather data to use!');
+
+        // check for correct location but no recent data
+        } else if (check.has_location 
+                && check.location_matches
+                && check.within_ten_minutes == false) {
+            this.weatherS.apiForecast()
+            .subscribe(
+                o => {
+                    console.log('darksky forecast api called from 1st else if');
+                    this.weatherS.parseForecast(o);
+                    this.setLocalVariables();
+                }
+            );
+
+        // call location search api, call weather forecast api, parse data, and setup local variables for DOM use
+        } else {
+            const city_region = `${this.city}, ${this.region_code}`;
+            console.log(city_region);
+            this.weatherS.apiGeoLocation(city_region).subscribe(
+                res => {
+                    this.weatherS.parseLocation(res);
+                    this.weatherS.apiForecast()
+                    .subscribe(
+                        response => {
+                            console.log('darksky forecast api called from 2nd else if');
+                            this.weatherS.parseForecast(response);
+                            this.setLocalVariables();
+                        }
+                    );
+
+                }
+            );
+        }
     }
 
+    locationMatches() {
+        // NEEEDS FIXXXX
+        const location = this.weatherS.getLocation();
+        console.log(location);
+        console.log(this.city, this.region_code);
+        return location.city == this.city
+            && location.region_code == this.region_code;
+    }
 
 }

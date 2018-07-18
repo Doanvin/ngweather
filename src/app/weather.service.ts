@@ -79,32 +79,28 @@ export class WeatherService {
         let location = text_location;
         let url = `https://query.yahooapis.com/v1/public/yql?q=select location.city,location.region,item.lat,item.long from weather.forecast where woeid in (select woeid from geo.places(1) where text="${location}")&format=json`;
         console.log('yahoo geoplaces api called');
-        this.http.get(url)
-            .subscribe(
-                o => {
-                    location.trim().split(',');
-                    const city = location[0];
+        return this.http.get(url);
+    }
 
-                    if (this.location.city == city) {
-                        console.log('SAME LOCATION. RESULTS STILL VALID');
-                    } else {
-                        const location: Location = {
-                            city: o['query']['results']['channel']['location']['city'],
-                            region_code: o['query']['results']['channel']['location']['region'].toUpperCase(),
-                            latitude: o['query']['results']['channel']['item']['lat'],
-                            longitude: o['query']['results']['channel']['item']['long']
-                        };
-                        const time = new Date(o['query']['created']);
-                        this.setLocation(location);
-                        this.setTime(time);
-                    }
-                }
-            );
+    parseLocation(o: object) {
+        const location: Location = {
+            city: o['query']['results']['channel']['location']['city'],
+            region_code: o['query']['results']['channel']['location']['region'].toUpperCase(),
+            latitude: o['query']['results']['channel']['item']['lat'],
+            longitude: o['query']['results']['channel']['item']['long']
+        };
+        const time = new Date(o['query']['created']);
+        this.setLocation(location);
+        this.setTime(time);
     }
 
     // calls the darksky weather api, updates service data, saves api call time to localStorage
-    apiForecast(exclude?: string, ) {
-        let url = `${environment.server_host}/search?latitude=${this.location.latitude}&longitude=${this.location.longitude}`;
+    apiForecast(exclude: string = 'minutely', units?: string) {
+        let excluded,
+            unit;
+        exclude ? excluded = `&exclude=${exclude}` : excluded = '';
+        units ? unit = `&units=${units}` : unit = '';
+        let url = `${environment.server_host}/search?latitude=${this.location.latitude}&longitude=${this.location.longitude}${excluded}${unit}`;
         return this.http.get(url);
     }
 
@@ -152,7 +148,7 @@ export class WeatherService {
     }
 
     hasCurrently() {
-        return this.currently && this.currently !== {} ? true : false;
+        return this.currently['temperature'] ? true : false;
     }
 
 }                                                                                         
