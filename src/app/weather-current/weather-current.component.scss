@@ -3,10 +3,13 @@
 
 }
 
+@media screen and (min-width: 576px) {
+    .main {
+        padding-top: 1.5rem;
+    }
+}
+
 .temp {
-    // display: flex;
-    // justify-content: center;
-    // align-items: flex-end;
     width: 100%;
     height: 100%;
 

@@ -32,10 +32,13 @@ export class LocationSearchComponent implements OnInit {
 
     // search weather by city, state || zip
     searchCityZip(text_location: string) {
-        this.weatherS.apiGeoLocation(text_location);
-        setTimeout(()=> {
-            this.searchLatLong();
-        }, 2000);
+        this.weatherS.apiGeoLocation(text_location)
+        .subscribe(
+            o => {
+                this.weatherS.parseLocation(o);
+                this.searchLatLong();
+            }
+        );
     }
 
 }

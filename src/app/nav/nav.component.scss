@@ -23,9 +23,16 @@
         &:hover {
             cursor: pointer;
         }
+
+        &--search {
+            height: 24px;
+            width: 24px;
+        }
     }
 
     &__menu-icon-wrapper {
+        height: 80%;
+        width: 100%;
         display: flex;
         justify-content: flex-end;
         align-items: center;
