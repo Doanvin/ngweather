@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges } from '@angular/core';
 
 @Component({
   selector: 'app-nav',
@@ -30,4 +30,11 @@ export class NavComponent implements OnInit {
   toggleSearch() {
     this.search.hidden = !this.search.hidden;
   }
+
+  // ngOnChanges() {
+  //   // doesn't change if screen width changes
+  //   this.nav_width = document.querySelector('.nav').getBoundingClientRect().width;
+  //   this.wide_enough = this.nav_width > 576;
+  //   this.location_home = window.location.pathname === '/';
+  // }
 }
