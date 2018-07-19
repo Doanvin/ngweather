@@ -98,7 +98,7 @@ export class WeatherCurrentComponent implements OnInit {
             this.weatherS.apiForecast()
             .subscribe(
                 o => {
-                    console.log('darksky forecast api called from 1st else if');
+                    console.log('darksky forecast api called from else if');
                     this.weatherS.parseForecast(o);
                     this.setLocalVariables();
                 }
@@ -119,7 +119,7 @@ export class WeatherCurrentComponent implements OnInit {
                     this.weatherS.apiForecast()
                     .subscribe(
                         response => {
-                            console.log('darksky forecast api called from 2nd else if');
+                            console.log('darksky forecast api called from else');
                             this.weatherS.parseForecast(response);
                             this.setLocalVariables();
                         }

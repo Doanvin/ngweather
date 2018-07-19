@@ -1,4 +1,11 @@
 # Ngweather
+Weather applicaiton for current weather and forecasts.  Uses Angular 6 and Typescript.
+
+##TODO
+- Add Icons to data table
+- Graph the daily weather forecasts
+- Add a drop down list of previously searched locations from search bar
+- Add a chart for hourly weather data
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.8.
 

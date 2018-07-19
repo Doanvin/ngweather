@@ -120,7 +120,7 @@ export class WeatherService {
         this.router.navigate([
             search_view, 
             this.location.city, 
-            this.location.region_code
+            this.location.region_code.trim()
         ]);
         console.log(`Nav To: ${search_view}/${this.location.city}/${this.location.region_code}`);
     }
