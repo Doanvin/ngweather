@@ -10,18 +10,25 @@ import { Router } from '@angular/router';
 })
 export class LocationSearchComponent implements OnInit {
     first_time: boolean;
-    city_region: string;
+    locationElement: HTMLElement;
 
     constructor(public weatherS: WeatherService,
                 public router: Router) { }
 
     ngOnInit() {
         this.first_time = this.weatherS.location.latitude ? false : true;
-        this.city_region = `${this.weatherS.location.city}, ${this.weatherS.location.region_code}`;
+        this.locationElement = document.getElementById('location-search');
+        
 
         // check if first time user, call location search service if true, save data
         if (this.first_time) {
-            this.weatherS.apiIpSearch();
+            this.weatherS.apiIpSearch()
+            .subscribe(
+                o => {
+                    this.weatherS.parseIpLocation(o);
+                    this.locationElement['value'] = `${this.weatherS.location.city}, ${this.weatherS.location.region_code}`;
+                }
+            );
         }
     }
 

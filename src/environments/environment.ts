@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  server_host: 'http://localhost:8888'
+  server_host: 'http://localhost:8080',
+  location_api: 'http://query.yahooapis.com/v1/public/yql'
 };
 
 /*

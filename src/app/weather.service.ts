@@ -52,32 +52,30 @@ export class WeatherService {
 
     // calls the ipstack api to get user location data
     apiIpSearch() {
-        const url = 'http://api.ipstack.com/check?access_key=781d96fbe17ec4d760a7474492866543';
+        const url = `${environment.server_host}/api/ip`;
         console.log('ip search api called');
-        this.http.get(url)
-            .subscribe(
-                o => {
-                    let location: Location = {
-                        city: o['city'] || '',
-                        region_code: o['region_code'] || '',
-                        latitude: o['latitude'] || 0,
-                        longitude: o['longitude'] || 0
-                    };
+        return this.http.get(url);
+    }
 
-                    if (location.latitude === 0 || location.longitude === 0) {
-                        console.error('error using auto geographic lookup');
-                    } else {
-                        this.setLocation(location);
-                    }
-                }
-            );
+    parseIpLocation(o: object) {
+        let location: Location = {
+            city: o['city'] || '',
+            region_code: o['region_code'] || '',
+            latitude: o['latitude'] || 0,
+            longitude: o['longitude'] || 0
+        };
+
+        if (location.latitude === 0 || location.longitude === 0) {
+            console.error('error using auto geographic lookup');
+        } else {
+            this.setLocation(location);
+        }
     }
 
     // calls yahoo geo places api to get lat, long, 
     // updates service data, stores location and api call time data
     apiGeoLocation(text_location: string) {
-        let location = text_location;
-        let url = `https://query.yahooapis.com/v1/public/yql?q=select location.city,location.region,item.lat,item.long from weather.forecast where woeid in (select woeid from geo.places(1) where text="${location}")&format=json`;
+        let url = `${environment.server_host}/api/location?q=${text_location}`;
         console.log('yahoo geoplaces api called');
         return this.http.get(url);
     }
@@ -100,7 +98,7 @@ export class WeatherService {
             unit;
         exclude ? excluded = `&exclude=${exclude}` : excluded = '';
         units ? unit = `&units=${units}` : unit = '';
-        let url = `${environment.server_host}/search?latitude=${this.location.latitude}&longitude=${this.location.longitude}${excluded}${unit}`;
+        let url = `${environment.server_host}/api/forecast?latitude=${this.location.latitude}&longitude=${this.location.longitude}${excluded}${unit}`;
         return this.http.get(url);
     }
 
@@ -124,7 +122,7 @@ export class WeatherService {
             this.location.city, 
             this.location.region_code
         ]);
-        console.log(this.location.latitude, this.location.longitude);
+        console.log(`Nav To: ${search_view}/${this.location.city}/${this.location.region_code}`);
     }
 
     withinOneHour() {

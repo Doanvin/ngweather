@@ -48,7 +48,7 @@ export class WeatherCurrentComponent implements OnInit {
         this.temp_low = Math.round(this.weatherS.daily['data'][0]['temperatureLow']) || 0;
         this.temp_high = Math.round(this.weatherS.daily['data'][0]['temperatureHigh']) || 0;
         this.apparent_temp = Math.round(this.weatherS.currently['apparentTemperature']) || 0;
-        this.humidity = this.weatherS.currently['humidity'] * 100 || 0;
+        this.humidity = Math.round(this.weatherS.currently['humidity'] * 100) || 0;
         this.precip_probability = Math.round(this.weatherS.currently['precipProbability'] * 100) || 0;
         this.precip_type = this.weatherS.currently['precipType'] || 'precipitaion';
         this.pressure = Math.round(this.weatherS.currently['pressure']) || 0;
@@ -69,7 +69,7 @@ export class WeatherCurrentComponent implements OnInit {
          // check if we already have recent forecast data to avoid excessive api calls
          const check = {
             has_location: this.weatherS.hasLocation(),
-            location_matches: this.locationMatches(),
+            location_matches: false,
             within_ten_minutes: this.weatherS.withinTenMinutes(),
             has_currently: this.weatherS.hasCurrently()
          };
@@ -90,6 +90,11 @@ export class WeatherCurrentComponent implements OnInit {
         } else if (check.has_location 
                 && check.location_matches
                 && check.within_ten_minutes == false) {
+            console.log(this.weatherS.hasLocation(),
+                this.locationMatches(),
+                this.weatherS.hasCurrently(),
+                this.weatherS.withinTenMinutes()
+            );
             this.weatherS.apiForecast()
             .subscribe(
                 o => {
@@ -102,6 +107,11 @@ export class WeatherCurrentComponent implements OnInit {
         // call location search api, call weather forecast api, parse data, and setup local variables for DOM use
         } else {
             const city_region = `${this.city}, ${this.region_code}`;
+            console.log(this.weatherS.hasLocation(),
+                 this.locationMatches(),
+                 this.weatherS.hasCurrently(),
+                 this.weatherS.withinTenMinutes()
+             );
             console.log(city_region);
             this.weatherS.apiGeoLocation(city_region).subscribe(
                 res => {
