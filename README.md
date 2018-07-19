@@ -1,5 +1,6 @@
 # Ngweather
-Weather applicaiton for current weather and forecasts.  Uses Angular 6 and Typescript.
+Weather applicaiton for current weather and forecasts.  Uses Angular 6 and Typescript with a NodeJS proxy server running on a VPS with Ubuntu and Nginx.
+UPDATED DAILY AT [NGWEATHER.TK](https://ngweather.tk).
 
 ## TODO
 - Add Icons to data table
