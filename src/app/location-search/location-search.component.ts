@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
 import { WeatherService } from '../weather.service';
 import { Router } from '@angular/router';
@@ -9,15 +9,14 @@ import { Router } from '@angular/router';
     styleUrls: ['./location-search.component.scss']
 })
 export class LocationSearchComponent implements OnInit {
+    @ViewChild('location') private location: ElementRef<HTMLInputElement>;
     first_time: boolean;
-    locationElement: HTMLElement;
 
     constructor(public weatherS: WeatherService,
                 public router: Router) { }
 
     ngOnInit() {
         this.first_time = this.weatherS.location.latitude ? false : true;
-        this.locationElement = document.getElementById('location-search');
         
 
         // check if first time user, call location search service if true, save data
@@ -26,10 +25,18 @@ export class LocationSearchComponent implements OnInit {
             .subscribe(
                 o => {
                     this.weatherS.parseIpLocation(o);
-                    this.locationElement['value'] = `${this.weatherS.location.city}, ${this.weatherS.location.region_code}`;
+                    this.setLocationValue();
                 }
             );
+        } else if (window.location.pathname === '/') {
+            // if on the homepage, fill location input with last used value
+            this.setLocationValue();
         }
+    }
+
+    // Uses WeatherService location and puts it as the value of location input element
+    setLocationValue() {
+        this.location.nativeElement.value = `${this.weatherS.location.city}, ${this.weatherS.location.region_code}`;
     }
 
     // search weather by latitude and longitude

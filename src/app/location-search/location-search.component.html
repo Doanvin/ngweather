@@ -5,7 +5,7 @@
         <input #location ngModel (keyup.enter)="searchButton.click()" type="text" name="location" id="location-search" placeholder="Enter your Location">
       </div>
       <div class="col-12 col-sm-3 col-md-2 col-lg-2">
-        <button #searchButton id="search-button" type="button" class="form-control btn btn-primary btn-block" 
+        <button #searchButton id="search-button" type="button" class="form-control btn btn-dark btn-block" 
                 (click)="searchCityZip(location.value)">Search</button>
       </div>
     </div>

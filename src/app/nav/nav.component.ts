@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
@@ -7,8 +7,8 @@ import { Router, NavigationEnd } from '@angular/router';
   styleUrls: ['./nav.component.scss']
 })
 export class NavComponent implements OnInit {
-  private menu: HTMLElement;
-  private search: HTMLElement;
+  @ViewChild('menu') private menu: ElementRef<HTMLElement>;
+  @ViewChild('search') private search: ElementRef<HTMLElement>;
   nav_width: number;
   wide_enough: boolean;
   location_home: boolean;
@@ -16,32 +16,34 @@ export class NavComponent implements OnInit {
   constructor(private router:Router) { }
 
   ngOnInit() {
-    this.menu = document.getElementById('menu');
-    this.search = document.getElementById('search');
     // doesn't change if screen width changes | fixed below
-    this.nav_width = document.querySelector('.nav').getBoundingClientRect().width;
-    this.wide_enough = this.nav_width > 576;
-    this.location_home = window.location.pathname === '/';
+    this.setCheckVariables();
 
     // recheck window location to load location-serach on non-home pages
     this.router.events
       .subscribe(
         event => {
           if (event instanceof NavigationEnd) {
-            this.nav_width = document.querySelector('.nav').getBoundingClientRect().width;
-            this.wide_enough = this.nav_width > 576;
-            this.location_home = window.location.pathname === '/';
+            this.setCheckVariables();
             console.log('Routes Recognized Event Triggered');
           }
         }
       );
   }
 
+  // checks if window.location is home and if viewport is wide 
+  // enough to display the search bar in the nav section
+  setCheckVariables() {
+    this.nav_width = document.querySelector('.nav').getBoundingClientRect().width;
+    this.wide_enough = this.nav_width > 576;
+    this.location_home = window.location.pathname === '/';
+  }
+
   toggleMenu() {
-    this.menu.hidden = !this.menu.hidden;
+    this.menu.nativeElement.hidden = !this.menu.nativeElement.hidden;
   }
 
   toggleSearch() {
-    this.search.hidden = !this.search.hidden;
+    this.search.nativeElement.hidden = !this.search.nativeElement.hidden;
   }
 }
