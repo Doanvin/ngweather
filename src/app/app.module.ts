@@ -10,6 +10,7 @@ import { LocationSearchComponent } from './location-search/location-search.compo
 import { WeatherCurrentComponent } from './weather-current/weather-current.component';
 import { WeatherService } from './weather.service';
 import { StoreService } from './store.service';
+import { WeatherDailyComponent } from './weather-daily/weather-daily.component';
 
 const appRoutes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -22,7 +23,8 @@ const appRoutes: Routes = [
     NavComponent,
     WelcomeComponent,
     LocationSearchComponent,
-    WeatherCurrentComponent
+    WeatherCurrentComponent,
+    WeatherDailyComponent
   ],
   imports: [
     BrowserModule,

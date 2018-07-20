@@ -1,4 +1,5 @@
-import { Component, OnInit, OnChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-nav',
@@ -12,15 +13,28 @@ export class NavComponent implements OnInit {
   wide_enough: boolean;
   location_home: boolean;
 
-  constructor() { }
+  constructor(private router:Router) { }
 
   ngOnInit() {
     this.menu = document.getElementById('menu');
     this.search = document.getElementById('search');
-    // doesn't change if screen width changes
+    // doesn't change if screen width changes | fixed below
     this.nav_width = document.querySelector('.nav').getBoundingClientRect().width;
     this.wide_enough = this.nav_width > 576;
     this.location_home = window.location.pathname === '/';
+
+    // recheck window location to load location-serach on non-home pages
+    this.router.events
+      .subscribe(
+        event => {
+          if (event instanceof NavigationEnd) {
+            this.nav_width = document.querySelector('.nav').getBoundingClientRect().width;
+            this.wide_enough = this.nav_width > 576;
+            this.location_home = window.location.pathname === '/';
+            console.log('Routes Recognized Event Triggered');
+          }
+        }
+      );
   }
 
   toggleMenu() {
@@ -30,11 +44,4 @@ export class NavComponent implements OnInit {
   toggleSearch() {
     this.search.hidden = !this.search.hidden;
   }
-
-  // ngOnChanges() {
-  //   // doesn't change if screen width changes
-  //   this.nav_width = document.querySelector('.nav').getBoundingClientRect().width;
-  //   this.wide_enough = this.nav_width > 576;
-  //   this.location_home = window.location.pathname === '/';
-  // }
 }
