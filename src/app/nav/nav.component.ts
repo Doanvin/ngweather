@@ -7,7 +7,7 @@ import { Router, NavigationEnd } from '@angular/router';
   styleUrls: ['./nav.component.scss']
 })
 export class NavComponent implements OnInit {
-  @ViewChild('menu') private menu: ElementRef<HTMLElement>;
+  // @ViewChild('menu') private menu: ElementRef<HTMLElement>;
   @ViewChild('search') private search: ElementRef<HTMLElement>;
   nav_width: number;
   wide_enough: boolean;
@@ -39,9 +39,9 @@ export class NavComponent implements OnInit {
     this.location_home = window.location.pathname === '/';
   }
 
-  toggleMenu() {
-    this.menu.nativeElement.hidden = !this.menu.nativeElement.hidden;
-  }
+  // toggleMenu() {
+  //   this.menu.nativeElement.hidden = !this.menu.nativeElement.hidden;
+  // }
 
   toggleSearch() {
     this.search.nativeElement.hidden = !this.search.nativeElement.hidden;
