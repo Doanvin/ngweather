@@ -59,12 +59,12 @@ export class WeatherDailyComponent implements OnInit {
 
   d3AreaChart(data: object[]) {
     // set the size of the chart
-    const margin = {top: 20, right: 20, bottom: 30, left: 50};
+    const margin = {top: 30, right: 40, bottom: 30, left: 50};
     const width = 960 - margin.left - margin.right;
     const height = 500 - margin.top - margin.bottom;
 
     // parse date from data
-    const parseDate = d3.timeFormat('%Y%m%d');
+    const parseDate = d3.timeFormat('%b %e');
 
     // set scales [domain and range]
     let xScale = d3.scaleTime()
@@ -78,7 +78,7 @@ export class WeatherDailyComponent implements OnInit {
     ]).range([height, 0]);
 
     // create axis'
-    let xAxis = d3.axisBottom(xScale),
+    let xAxis = d3.axisBottom(xScale).ticks(8),
         yAxis = d3.axisLeft(yScale).ticks(6);
 
     // create svg
@@ -121,17 +121,23 @@ export class WeatherDailyComponent implements OnInit {
       .style('text-anchor', 'middle')
       .text('Temperature &deg;F');
 
+    // low_temp line
     svg.append('path')
       .attr('class', 'line')
       .attr('d', low_line)
       .style('fill', 'none')
-      .style('stroke', 'rgba(255, 72, 72, 0.5)')
+      .style('stroke', 'rgba(8, 97, 156, 0.6)')
       .style('stroke-width', '3px')
-      .style('shape-rendering', 'crispEdges');
+      .style('shape-rendering', 'optimzeSpeed');
 
+    // high_temp line
     svg.append('path')
       .attr('class', 'line')
-      .attr('d', high_line);
+      .attr('d', high_line)
+      .style('fill', 'none')
+      .style('stroke', 'rgba(255, 86, 29, 0.6)')
+      .style('stroke-width', '3px')
+      .style('shape-rendering', 'optimzeSpeed');
 
     svg.selectAll("circle.low-temp")
       .data(data)
@@ -139,7 +145,7 @@ export class WeatherDailyComponent implements OnInit {
       .append("circle")
       .attr("cx", d => xScale(d['date']))
       .attr("cy", d => yScale(d['low_temp']))
-      .attr("r", 5);
+      .attr("r", 4);
 
     svg.selectAll("circle.high-temp")
       .data(data)
@@ -147,15 +153,25 @@ export class WeatherDailyComponent implements OnInit {
       .append("circle")
       .attr("cx", d => xScale(d['date']))
       .attr("cy", d => yScale(d['high_temp']))
-      .attr("r", 5);
+      .attr("r", 4);
 
-    // svg.selectAll('text')
-    //   .data(data)    
-    //   .enter()
-    //   .append('text')
-    //   .text( d => d['date'] + ', ' + d['low_temp'])
-    //   .attr("x", d => xScale(d['date'] + 10))
-    //   .attr("y", d => yScale(d['low_temp']));
+    // low_temp labels
+    svg.selectAll('text.low-temp')
+      .data(data)    
+      .enter()
+      .append('text')
+      .text( d => d['low_temp'] + ' °F')
+      .attr("x", d => xScale(d['date']))
+      .attr("y", d => yScale(d['low_temp']) - 10);
+
+    // high_temp labels
+    svg.selectAll('text.high-temp')
+      .data(data)    
+      .enter()
+      .append('text')
+      .text( d => d['high_temp'] + ' °F')
+      .attr("x", d => xScale(d['date']))
+      .attr("y", d => yScale(d['high_temp']) - 10);
   }
 
 }
