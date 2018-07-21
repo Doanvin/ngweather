@@ -79,7 +79,7 @@ export class WeatherDailyComponent implements OnInit {
 
     // create axis'
     let xAxis = d3.axisBottom(xScale),
-        yAxis = d3.axisLeft(yScale);
+        yAxis = d3.axisLeft(yScale).ticks(6);
 
     // create svg
     let svg = d3.select('div.line-chart').append('svg')
@@ -91,10 +91,12 @@ export class WeatherDailyComponent implements OnInit {
 
     // create high and low temp lines
     let low_line = d3.line()
+      .curve(d3.curveLinear)
       .x( d => xScale(d['date']))
       .y( d => yScale(d['low_temp']));
 
     let high_line = d3.line()
+      .curve(d3.curveLinear)
       .x( d => xScale(d['date']))
       .y( d => yScale(d['high_temp']));
 
@@ -103,45 +105,57 @@ export class WeatherDailyComponent implements OnInit {
 
     // x-axis
     svg.append('g')
-      .attr('class', 'axis')
+      .attr('class', 'axis axis--x')
       .attr('transform', 'translate(0, ' + height + ')')
       .style('text-anchor', 'middle')
       .call(xAxis);
 
     // y-axis
     svg.append('g')
-      .attr('class', 'axis')
+      .attr('class', 'axis axis--y')
       .call(yAxis)
     .append('text')
       .attr('transform', 'rotate(-90)')
       .attr('y', 6)
+      .attr('dy', '.71em')
       .style('text-anchor', 'middle')
       .text('Temperature &deg;F');
 
     svg.append('path')
       .attr('class', 'line')
-      .attr('d', low_line);
+      .attr('d', low_line)
+      .style('fill', 'none')
+      .style('stroke', 'rgba(255, 72, 72, 0.5)')
+      .style('stroke-width', '3px')
+      .style('shape-rendering', 'crispEdges');
 
     svg.append('path')
       .attr('class', 'line')
       .attr('d', high_line);
 
-    svg.selectAll("circle")
+    svg.selectAll("circle.low-temp")
       .data(data)
       .enter()
       .append("circle")
       .attr("cx", d => xScale(d['date']))
       .attr("cy", d => yScale(d['low_temp']))
-      .attr('cy', d => yScale(d['high_temp']))
-      .attr("r", d => 5);
+      .attr("r", 5);
 
-    svg.selectAll('text')
-      .data(data)    
+    svg.selectAll("circle.high-temp")
+      .data(data)
       .enter()
-      .append('text')
-      .text( d => d['date'] + ', ' + d['low_temp'])
-      .attr("x", d => xScale(d['date'] + 10))
-      .attr("y", d => yScale(d['low_temp']));
+      .append("circle")
+      .attr("cx", d => xScale(d['date']))
+      .attr("cy", d => yScale(d['high_temp']))
+      .attr("r", 5);
+
+    // svg.selectAll('text')
+    //   .data(data)    
+    //   .enter()
+    //   .append('text')
+    //   .text( d => d['date'] + ', ' + d['low_temp'])
+    //   .attr("x", d => xScale(d['date'] + 10))
+    //   .attr("y", d => yScale(d['low_temp']));
   }
 
 }
