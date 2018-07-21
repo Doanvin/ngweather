@@ -13,7 +13,6 @@
             &:hover,
             &:focus {
                 color: $gray-800;
-                // text-decoration: underline;
             }
         }
     }
@@ -57,24 +56,20 @@
     }
 }
 
-#menu {
-    padding-top: 1.25rem;
-}
-
 .menu {
     display: flex;
     justify-content: center;
     margin: 0;
     width: 100%;
     z-index: 1;
-    padding-left: 0;
+    padding: 1.25rem 0;
 
     &__wrapper {
         background-color: rgba(145, 199, 234, 0.1);
     }
 
     &__list {
-        padding: 20px;
+        padding: 0 20px;
     }
 
     &__list-link:hover, &__list-link:focus {

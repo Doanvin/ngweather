@@ -13,7 +13,7 @@
             <div class="nav__menu-icon-wrapper align-center">
               <img src="data:image/svg+xml;base64,PHN2ZyBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1wcmVmaXg9ImZhcyIgZGF0YS1pY29uPSJzZWFyY2giIGNsYXNzPSJzdmctaW5saW5lLS1mYSBmYS1zZWFyY2ggZmEtdy0xNiIgcm9sZT0iaW1nIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik01MDUgNDQyLjdMNDA1LjMgMzQzYy00LjUtNC41LTEwLjYtNy0xNy03SDM3MmMyNy42LTM1LjMgNDQtNzkuNyA0NC0xMjhDNDE2IDkzLjEgMzIyLjkgMCAyMDggMFMwIDkzLjEgMCAyMDhzOTMuMSAyMDggMjA4IDIwOGM0OC4zIDAgOTIuNy0xNi40IDEyOC00NHYxNi4zYzAgNi40IDIuNSAxMi41IDcgMTdsOTkuNyA5OS43YzkuNCA5LjQgMjQuNiA5LjQgMzMuOSAwbDI4LjMtMjguM2M5LjQtOS40IDkuNC0yNC42LjEtMzR6TTIwOCAzMzZjLTcwLjcgMC0xMjgtNTcuMi0xMjgtMTI4IDAtNzAuNyA1Ny4yLTEyOCAxMjgtMTI4IDcwLjcgMCAxMjggNTcuMiAxMjggMTI4IDAgNzAuNy01Ny4yIDEyOC0xMjggMTI4eiI+PC9wYXRoPjwvc3ZnPg==" 
               class="nav__menu-icon nav__menu-icon--search" alt="Search Icon to Toggle Search By Location Form"
-              (click)="toggleMenu()">
+              (click)="toggleSearch()">
             </div>
           </div>
           <div class="col-2 col-md-1">
@@ -26,13 +26,18 @@
     </div>
 </nav>
 
+<div #search hidden class="menu__wrapper">
+  <div class="container">
+    <div *ngIf="!wide_enough && !location_home" class="row">
+        <div class="col-12">
+          <app-location-search class="menu"></app-location-search>
+        </div>
+      </div>
+  </div>
+</div>
+
 <div #menu hidden class="menu__wrapper">
 <div class="container">
-  <div *ngIf="!wide_enough && !location_home" class="row">
-    <div class="col-12">
-      <app-location-search></app-location-search>
-    </div>
-  </div>
   <div class="row">
       <div class="col-10 offset-1 col-md-6 offset-md-3 offset-lg-6">
           <menu class="menu" type="toolbar">
