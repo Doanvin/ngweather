@@ -4,7 +4,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { WeatherService } from '../weather.service';
 
 import { scaleLinear } from 'd3-scale';
-import { select } from 'd3-selection';
+import { select, style } from 'd3-selection';
 // global.d.ts
 import * as d3 from "d3";
 
@@ -59,7 +59,7 @@ export class WeatherDailyComponent implements OnInit {
 
   d3AreaChart(data: object[]) {
     // set the size of the chart
-    const margin = {top: 30, right: 40, bottom: 30, left: 50};
+    const margin = {top: 30, right: 40, bottom: 30, left: 20};
     const width = 960 - margin.left - margin.right;
     const height = 500 - margin.top - margin.bottom;
 
@@ -82,7 +82,7 @@ export class WeatherDailyComponent implements OnInit {
         yAxis = d3.axisLeft(yScale).ticks(6);
 
     // create svg
-    let svg = d3.select('div.line-chart').append('svg')
+    let svg = d3.select('svg.line-chart')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
       // create chart group
@@ -100,6 +100,12 @@ export class WeatherDailyComponent implements OnInit {
       .x( d => xScale(d['date']))
       .y( d => yScale(d['high_temp']));
 
+    // create area
+    let area =  d3.area()
+        .x( d => xScale(d['date']))
+        .y0( d => yScale(d['low_temp']))
+        .y1( d => yScale(d['high_temp']));
+
     // add groups [x-axis, y-axis, low_line, high_line]
     svg.datum(data);
 
@@ -114,19 +120,21 @@ export class WeatherDailyComponent implements OnInit {
     svg.append('g')
       .attr('class', 'axis axis--y')
       .call(yAxis)
+    .select('.tick:last-of-type')
     .append('text')
-      .attr('transform', 'rotate(-90)')
-      .attr('y', 6)
-      .attr('dy', '.71em')
-      .style('text-anchor', 'middle')
-      .text('Temperature &deg;F');
+      // .attr('transform', 'rotate(-90)')
+      .attr('x', 160)
+      .attr('y', -25)
+      .style('fill', 'rgba(0, 0, 0, 0.9)')
+      .attr('dy', '.32em')
+      .text('Temperature Highs & Lows (°F)');
 
     // low_temp line
     svg.append('path')
       .attr('class', 'line')
       .attr('d', low_line)
       .style('fill', 'none')
-      .style('stroke', 'rgba(8, 97, 156, 0.6)')
+      .style('stroke', 'rgba(8, 97, 156, 0.8)')
       .style('stroke-width', '3px')
       .style('shape-rendering', 'optimzeSpeed');
 
@@ -135,9 +143,14 @@ export class WeatherDailyComponent implements OnInit {
       .attr('class', 'line')
       .attr('d', high_line)
       .style('fill', 'none')
-      .style('stroke', 'rgba(255, 86, 29, 0.6)')
+      .style('stroke', 'rgba(255, 86, 29, 0.8)')
       .style('stroke-width', '3px')
       .style('shape-rendering', 'optimzeSpeed');
+
+    svg.append('path')
+      .attr('class', 'area')
+      .attr('d', area)
+      .style('fill', 'url(#gradient1)');
 
     svg.selectAll("circle.low-temp")
       .data(data)
@@ -145,7 +158,8 @@ export class WeatherDailyComponent implements OnInit {
       .append("circle")
       .attr("cx", d => xScale(d['date']))
       .attr("cy", d => yScale(d['low_temp']))
-      .attr("r", 4);
+      .attr("r", 4)
+      .style('fill', 'rgba(0, 0, 0, 0.7)');
 
     svg.selectAll("circle.high-temp")
       .data(data)
@@ -153,7 +167,8 @@ export class WeatherDailyComponent implements OnInit {
       .append("circle")
       .attr("cx", d => xScale(d['date']))
       .attr("cy", d => yScale(d['high_temp']))
-      .attr("r", 4);
+      .attr("r", 4)
+      .style('fill', 'rgba(0, 0, 0, 0.7)');
 
     // low_temp labels
     svg.selectAll('text.low-temp')
