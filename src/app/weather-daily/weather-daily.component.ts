@@ -59,21 +59,23 @@ export class WeatherDailyComponent implements OnInit {
 
   d3AreaChart(data: object[]) {
     // set the size of the chart
-    const margin = {top: 20, right: 20, bottom: 30, left: 50},
-          width = 960 - margin.left - margin.right,
-          height = 500 - margin.top - margin.bottom;
+    const margin = {top: 20, right: 20, bottom: 30, left: 50};
+    const width = 960 - margin.left - margin.right;
+    const height = 500 - margin.top - margin.bottom;
 
     // parse date from data
-    const parseDate = d3.timeFormat('%b %e');
+    const parseDate = d3.timeFormat('%Y%m%d');
 
-    
-
-    // set scales
+    // set scales [domain and range]
     let xScale = d3.scaleTime()
+      .domain(d3.extent(data, d => d['date']))
       .range([0, width]);
 
     let yScale = d3.scaleLinear()
-      .range([height, 0]);
+    .domain([
+      d3.min(data, d => Math.min(d['low_temp'])),
+      d3.max(data, d => Math.max(d['high_temp']))
+    ]).range([height, 0]);
 
     // create axis'
     let xAxis = d3.axisBottom(xScale),
@@ -81,51 +83,39 @@ export class WeatherDailyComponent implements OnInit {
 
     // create svg
     let svg = d3.select('div.line-chart').append('svg')
-      .attr('height', width + margin.left + margin.right)
-      .attr('width', height + margin.top + margin.bottom)
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
       // create chart group
       .append('g')
       .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
 
     // create high and low temp lines
     let low_line = d3.line()
-      .x( d => d['date'])
-      .y( d => d['low_temp']);
+      .x( d => xScale(d['date']))
+      .y( d => yScale(d['low_temp']));
 
     let high_line = d3.line()
-      .x( d => d['date'])
-      .y( d => d['high_temp'])
+      .x( d => xScale(d['date']))
+      .y( d => yScale(d['high_temp']));
 
-    // construct the line using points from the data
-    data.forEach( d => {
-      d['date'] = parseDate(d['date']);
-      d['low_temp'] = +d['low_temp'];
-      d['high_temp'] = +d['high_temp']
-    });
-
-    // establish domain for x and y axis
-    xScale.domain(d3.extent(data, d => d['date']));
-    yScale.domain([
-      d3.min(data, d => Math.min(d['low_temp'])),
-      d3.max(data, d => Math.max(d['high_temp']))
-    ]);
-
-    // add groups
+    // add groups [x-axis, y-axis, low_line, high_line]
     svg.datum(data);
 
+    // x-axis
     svg.append('g')
-      .attr('class', 'x-axis')
+      .attr('class', 'axis')
       .attr('transform', 'translate(0, ' + height + ')')
+      .style('text-anchor', 'middle')
       .call(xAxis);
 
+    // y-axis
     svg.append('g')
-      .attr('class', 'y-axis')
+      .attr('class', 'axis')
       .call(yAxis)
-      .append('text')
+    .append('text')
       .attr('transform', 'rotate(-90)')
       .attr('y', 6)
-      .attr('dy', '.71em')
-      .style('text-anchor', 'end')
+      .style('text-anchor', 'middle')
       .text('Temperature &deg;F');
 
     svg.append('path')
@@ -135,7 +125,23 @@ export class WeatherDailyComponent implements OnInit {
     svg.append('path')
       .attr('class', 'line')
       .attr('d', high_line);
-    
+
+    svg.selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("cx", d => xScale(d['date']))
+      .attr("cy", d => yScale(d['low_temp']))
+      .attr('cy', d => yScale(d['high_temp']))
+      .attr("r", d => 5);
+
+    svg.selectAll('text')
+      .data(data)    
+      .enter()
+      .append('text')
+      .text( d => d['date'] + ', ' + d['low_temp'])
+      .attr("x", d => xScale(d['date'] + 10))
+      .attr("y", d => yScale(d['low_temp']));
   }
 
 }

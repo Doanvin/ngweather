@@ -1,13 +1,15 @@
 .axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
+.axis .line {
+  fill: #b41a1a;
+  stroke: rgba(255, 72, 72, 0.5);
+  stroke-width: 1.5px;
   shape-rendering: crispEdges;
 }
 
-.x.axis path {
-  display: none;
-}
+
+// .x.axis path {
+// //   display: none;
+// }
 
 .area.above {
   fill: rgb(252,141,89);
@@ -18,7 +20,7 @@
 }
 
 .line {
-  fill: none;
-  stroke: #000;
+  fill: #8dc722;
+  stroke: rgba(255, 62, 62, 0.336);
   stroke-width: 1.5px;
 }
