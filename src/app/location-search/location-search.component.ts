@@ -34,12 +34,12 @@ export class LocationSearchComponent implements OnInit {
         }
     }
 
-    // Uses WeatherService location and puts it as the value of location input element
+    // uses WeatherService location and puts it as the value of location input element
     setLocationValue() {
         this.location.nativeElement.value = `${this.weatherS.location.city}, ${this.weatherS.location.region_code}`;
     }
 
-    // search weather by latitude and longitude
+    // search weather by latitude and longitude and navigate to weather display page
     searchLatLong() {
         this.weatherS.navigate('current');
     }

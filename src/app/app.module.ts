@@ -11,6 +11,7 @@ import { WeatherCurrentComponent } from './weather-current/weather-current.compo
 import { WeatherService } from './weather.service';
 import { StoreService } from './store.service';
 import { WeatherDailyComponent } from './weather-daily/weather-daily.component';
+import { WeatherHourlyComponent } from './weather-hourly/weather-hourly.component';
 
 const appRoutes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -24,7 +25,8 @@ const appRoutes: Routes = [
     WelcomeComponent,
     LocationSearchComponent,
     WeatherCurrentComponent,
-    WeatherDailyComponent
+    WeatherDailyComponent,
+    WeatherHourlyComponent
   ],
   imports: [
     BrowserModule,
