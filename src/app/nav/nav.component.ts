@@ -16,19 +16,13 @@ export class NavComponent implements OnInit {
   constructor(private router:Router) { }
 
   ngOnInit() {
-    // doesn't change if screen width changes | fixed below
-    this.setCheckVariables();
-
     // recheck window location to load location-serach on non-home pages
-    this.router.events
-      .subscribe(
-        event => {
-          if (event instanceof NavigationEnd) {
-            this.setCheckVariables();
-            console.log('Routes Recognized Event Triggered');
-          }
+    this.router.events.subscribe(event => {
+        if (event instanceof NavigationEnd) {
+          this.setCheckVariables();
+          console.log('Routes NavigationEnd Event Triggered');
         }
-      );
+    });
   }
 
   // checks if window.location is home and if viewport is wide 

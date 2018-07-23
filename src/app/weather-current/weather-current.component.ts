@@ -50,8 +50,8 @@ export class WeatherCurrentComponent implements OnInit {
         // subscribe to forecast: daily
         this.weatherS.daily$.subscribe(daily => {
             // sets local variables for forecast: daily
-            this.temp_low = daily[0]['temperatureLow'] || 0;
-            this.temp_high = daily[0]['temperatureHigh'] || 0;
+            this.temp_low = Math.round(daily[0]['temperatureLow']) || 0;
+            this.temp_high = Math.round(daily[0]['temperatureHigh']) || 0;
         });
     }
 
