@@ -15,6 +15,7 @@ export class WeatherService {
     hourly: object;
     daily: object;
     time: Date;
+    location_matches: boolean;
 
     constructor(public store: StoreService, 
                 public http: HttpClient, 
@@ -24,6 +25,7 @@ export class WeatherService {
         this.currently = this.store.get('currently') || {};
         this.hourly = this.store.get('hourly') || {};
         this.daily = this.store.get('daily') || {};
+        this.location_matches = false;
     }
 
     setLocation(location: Location) {
@@ -34,7 +36,7 @@ export class WeatherService {
     }
 
     getLocation() {
-        return this.store.get('location');
+        return this.location || this.store.get('location');
     }
 
     setTime(time: Date) {
@@ -44,7 +46,19 @@ export class WeatherService {
     }
 
     getTime() {
-        return new Date(this.store.get('time'));
+        return this.time || new Date(this.store.get('time'));
+    }
+
+    getCurrently() {
+        return this.currently || this.store.get('currently');
+    }
+
+    getHourly() {
+        return this.hourly || this.store.get('hourly');
+    }
+
+    getDaily() {
+        return this.daily || this.store.get('hourly');
     }
 
     // calls the ipstack api to get user location data
@@ -59,7 +73,8 @@ export class WeatherService {
             city: o['city'] || '',
             region_code: o['region_code'] || '',
             latitude: o['latitude'] || 0,
-            longitude: o['longitude'] || 0
+            longitude: o['longitude'] || 0,
+            time: new Date(o['created']) || new Date()
         };
 
         if (location.latitude === 0 || location.longitude === 0) {
@@ -82,11 +97,12 @@ export class WeatherService {
             city: o['query']['results']['channel']['location']['city'],
             region_code: o['query']['results']['channel']['location']['region'].toUpperCase(),
             latitude: o['query']['results']['channel']['item']['lat'],
-            longitude: o['query']['results']['channel']['item']['long']
+            longitude: o['query']['results']['channel']['item']['long'],
+            time: new Date(o['query']['created'])
         };
-        const time = new Date(o['query']['created']);
+        this.location_matches = this.location == location;
         this.setLocation(location);
-        this.setTime(time);
+        this.setTime(location.time);
     }
 
     // calls the darksky weather api, updates service data, saves api call time to localStorage
@@ -103,21 +119,17 @@ export class WeatherService {
         this.currently = o['currently'];
         this.hourly = o['hourly'];
         this.daily = o['daily'];
-        this.time = o['currently']['time'];
+        this.time = new Date(o['currently']['time'] * 1000);
+
+        this.location['time'] = this.time;
+
         this.store.bulkSet([
+            {location: this.location},
             {currently: this.currently},
             {hourly: this.hourly},
             {daily: this.daily},
             {time: this.time}
         ]);
-    }
-
-    withinOneHour() {
-        const one_hour = 60 * 60 * 1000;
-        let now: any = new Date();
-        now = now.getTime();
-        const last_query_time: any = this.getTime().getTime()*1000;
-        return (now - last_query_time) < one_hour;
     }
 
     withinTenMinutes() {

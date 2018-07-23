@@ -2,8 +2,8 @@
     <div class="container">
         <div class="row">
 
-          <div *ngIf="location_home" class="col-12"><div class="nav__logo"><h1 class="nav__title align-center"><a href="/">NGWEATHER</a></h1></div></div>
-          <div *ngIf="!location_home" class="col-8 col-sm-5 col-md-4"><div class="nav__logo"><h1 class="nav__title align-center"><a href="/">NGWEATHER</a></h1></div></div>
+          <div *ngIf="location_home" class="col-12"><div class="nav__logo"><h1 class="nav__title align-center"><a routerLink="/">NGWEATHER</a></h1></div></div>
+          <div *ngIf="!location_home" class="col-8 col-sm-5 col-md-4"><div class="nav__logo"><h1 class="nav__title align-center"><a routerLink="/">NGWEATHER</a></h1></div></div>
 
           <div *ngIf="wide_enough && !location_home" class="col-sm-7 col-md-6 offset-md-2">
             <app-location-search></app-location-search>

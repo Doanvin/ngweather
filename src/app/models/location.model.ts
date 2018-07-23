@@ -3,5 +3,5 @@ export interface Location {
     region_code: string;
     latitude: number;
     longitude: number;
-
+    time: Date;
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { WeatherService } from '../weather.service';
+import { Observable } from 'rxjs';
 declare var Skycons: any;
 
 @Component({
@@ -39,6 +40,8 @@ export class WeatherCurrentComponent implements OnInit {
                 this.initiationSequence();
             }
         );
+
+        const apiForecast$ = new Observable()
     }
 
     setLocalVariables() {
@@ -59,71 +62,73 @@ export class WeatherCurrentComponent implements OnInit {
     }
 
     startSkycons() {
-        let skycons = new Skycons({"color": "#D46A6A"});
+        let skycons = new Skycons({ "color": "#D46A6A" });
         let icon = this.icon.toUpperCase().replace(/-/g, "_");
         skycons.add('icon', Skycons[icon]);
         skycons.play();
     }
 
     initiationSequence() {
-         // check if we already have recent forecast data to avoid excessive api calls
-         const check = {
+        // check if we already have recent forecast data to avoid excessive api calls
+        const check = {
             has_location: this.weatherS.hasLocation(),
-            location_matches: false,
+            location_matches: this.weatherS.location_matches,
             within_ten_minutes: this.weatherS.withinTenMinutes(),
             has_currently: this.weatherS.hasCurrently()
-         };
+        };
 
-         if (check.has_location
-         && check.location_matches
-         && check.within_ten_minutes
-         && check.has_currently) {
-             console.log(this.weatherS.hasLocation(),
-                 this.locationMatches(),
-                 this.weatherS.hasCurrently(),
-                 this.weatherS.withinTenMinutes()
-             );
-             this.setLocalVariables();
-             console.log('We have recent weather data to use!');
-
-        // check for correct location but no recent data
-        } else if (check.has_location 
-                && check.location_matches
-                && check.within_ten_minutes == false) {
+        if (check.has_location
+            && check.location_matches
+            && check.within_ten_minutes
+            && check.has_currently
+        ) {
             console.log(this.weatherS.hasLocation(),
                 this.locationMatches(),
                 this.weatherS.hasCurrently(),
                 this.weatherS.withinTenMinutes()
             );
-            this.weatherS.apiForecast()
-            .subscribe(
-                o => {
-                    console.log('darksky forecast api called from else if');
-                    this.weatherS.parseForecast(o);
-                    this.setLocalVariables();
-                }
-            );
+            this.setLocalVariables();
+            console.log('We have recent weather data to use!');
 
-        // call location search api, call weather forecast api, parse data, and setup local variables for DOM use
+            // check for correct location but no recent data
+        } else if (
+            check.has_location
+            && check.location_matches
+            && check.within_ten_minutes == false) {
+                console.log(this.weatherS.hasLocation(),
+                this.locationMatches(),
+                this.weatherS.hasCurrently(),
+                this.weatherS.withinTenMinutes()
+            );
+            this.weatherS.apiForecast()
+                .subscribe(
+                    o => {
+                        console.log('darksky forecast api called from else if');
+                        this.weatherS.parseForecast(o);
+                        this.setLocalVariables();
+                    }
+                );
+
+            // call location search api, call weather forecast api, parse data, and setup local variables for DOM use
         } else {
             const city_region = `${this.city}, ${this.region_code}`;
             console.log(this.weatherS.hasLocation(),
-                 this.locationMatches(),
-                 this.weatherS.hasCurrently(),
-                 this.weatherS.withinTenMinutes()
-             );
+                this.locationMatches(),
+                this.weatherS.hasCurrently(),
+                this.weatherS.withinTenMinutes()
+            );
             console.log(city_region);
             this.weatherS.apiGeoLocation(city_region).subscribe(
                 res => {
                     this.weatherS.parseLocation(res);
                     this.weatherS.apiForecast()
-                    .subscribe(
-                        response => {
-                            console.log('darksky forecast api called from else');
-                            this.weatherS.parseForecast(response);
-                            this.setLocalVariables();
-                        }
-                    );
+                        .subscribe(
+                            response => {
+                                console.log('darksky forecast api called from else');
+                                this.weatherS.parseForecast(response);
+                                this.setLocalVariables();
+                            }
+                        );
 
                 }
             );
