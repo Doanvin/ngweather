@@ -41,7 +41,12 @@ export class LocationSearchComponent implements OnInit {
 
     // search weather by latitude and longitude and navigate to weather display page
     searchLatLong() {
-        this.weatherS.navigate('current');
+        this.router.navigate([
+            '/search', 
+            this.weatherS.location.city, 
+            this.weatherS.location.region_code.trim()
+        ]);
+        console.log(`Nav To: /search/${this.weatherS.location.city}/${this.weatherS.location.region_code}`);
     }
 
     // search weather by city, state || zip

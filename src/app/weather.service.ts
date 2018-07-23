@@ -11,9 +11,6 @@ import { Router } from '@angular/router';
 })
 export class WeatherService {
     location: any;
-    latitude: number;
-    longitude: number;
-    region_code: string;
     currently: object;
     hourly: object;
     daily: object;
@@ -113,16 +110,6 @@ export class WeatherService {
             {daily: this.daily},
             {time: this.time}
         ]);
-    }
-
-    navigate(view: string) {
-        const search_view = ['/search',view].join('/');
-        this.router.navigate([
-            search_view, 
-            this.location.city, 
-            this.location.region_code.trim()
-        ]);
-        console.log(`Nav To: ${search_view}/${this.location.city}/${this.location.region_code}`);
     }
 
     withinOneHour() {

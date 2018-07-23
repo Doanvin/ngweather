@@ -15,7 +15,7 @@ import { WeatherHourlyComponent } from './weather-hourly/weather-hourly.componen
 
 const appRoutes: Routes = [
   { path: '', component: WelcomeComponent },
-  { path: 'search/current/:city/:region_code', component: WeatherCurrentComponent}
+  { path: 'search/:city/:region_code', component: WeatherCurrentComponent}
 ]
 
 @NgModule({
