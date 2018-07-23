@@ -13,11 +13,15 @@ import * as d3 from "d3";
 export class WeatherHourlyComponent implements OnInit {
     private hourly: object[];
     private temperatureData: Object[];
+    private lessThanMd: boolean;
 
     constructor(private router: Router, private weatherS: WeatherService) { }
 
     ngOnInit() {
+
+        let client_width = document.documentElement.clientWidth || document.body.clientWidth;
         this.hourly = this.weatherS.hourly['data'];
+        this.lessThanMd = client_width <= 767;
         this.temperatureData = this.parseForD3LineChart();
         this.d3LineChart(this.temperatureData);
 
@@ -54,7 +58,7 @@ export class WeatherHourlyComponent implements OnInit {
 
     d3LineChart(data: object[]) {
         // set chart sizes
-		let clientWidth:number = document.documentElement.clientWidth || document.body.clientWidth;
+		let clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
 		let margin, width, height;
 		if (clientWidth < 321) {
 			margin = { top: 6, right: 20, bottom: 20, left: 26 };

@@ -1,45 +1,66 @@
 <main id="main" class="main container-fluid">
   <div class="container">
 
-    <div class="row">
-      <div class="col-12 col-sm-6 col-md-5 col-lg-4 mt-3 mb-3 is-card">
-        <div class="row">
-          <div class="col-12">
-            <h3 class="text-center">Currently in {{ city }}, {{region_code}}</h3>
-          </div>
-          <div class="col-5">
-            <canvas id="icon" class="sky-canvas icon" width="96" height="96"></canvas>
-          </div>
-          <div class="col-7">
-            <div class="temp">
-              <div class="temp__display">
-                <h3 class="temp__title">{{ temp }} &deg;F</h3>
-                <span class="temp__subtitle">{{ summary }}</span>
+    <div class="row justify-content-between">
+      <div class="col-12 col-sm-6 col-md-6 col-lg-5 mt-3 mb-3">
+        <div class="is-card temp__wrapper">
+          <div class="row">
+            <div class="col-12">
+              <h3 class="text-center">Currently in {{ city }}, {{region_code}}</h3>
+            </div>
+            <div class="col-5">
+              <canvas id="icon" class="sky-canvas icon" width="96" height="96"></canvas>
+            </div>
+            <div class="col-7">
+              <div class="temp">
+                <div class="temp__display">
+                  <h3 class="temp__title">{{ temp }} &deg;F</h3>
+                  <span class="temp__subtitle">{{ summary }}</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="temp__subtitle col-12 text-center mt-3">
-            Feels Like: {{ apparent_temp }} &deg;F
-            <br>
-            <span class="temp__extreme temp__extreme--low">Low: {{ temp_low }} &deg;F</span>
-            <span class="temp__extreme temp__extreme--high">High: {{ temp_high }} &deg;F</span>
+            <div class="temp__subtitle col-12 text-center mt-3">
+              Feels Like: {{ apparent_temp }} &deg;F
+              <br>
+              <span class="temp__extreme temp__extreme--low">Low: {{ temp_low }} &deg;F</span>
+              <span class="temp__extreme temp__extreme--high">High: {{ temp_high }} &deg;F</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="col-12 col-sm-5 offset-sm-1 col-md-6 offset-md-1 col-lg-7 offset-lg-1 mb-3 is-card temp__list">
-
-        <ul class="ul">
-          <li class="li is-card--top">Wind Speed: {{ wind_speed }} mph</li>
-          <li class="li">Humidity: {{ humidity }}%</li>
-          <li class="li">There's a {{ precip_probability }}% chance of {{ precip_type }}</li>
-          <li class="li">Pressure: {{ pressure }} mmHg</li>
-          <li class="li">UV Index: {{ uv_index }}</li>
-          <li class="li is-card--bottom">Ozone: {{ ozone }}</li>
-        </ul>
+      <div class="col-12 col-sm-6 col-md-6 col-lg-7 mb-3">
+        <div class="is-card temp__list">
+          <ul class="ul">
+            <li class="li is-card--top">Wind Speed: {{ wind_speed }} mph</li>
+            <li class="li">Humidity: {{ humidity }}%</li>
+            <li class="li">There's a {{ precip_probability }}% chance of {{ precip_type }}</li>
+            <li class="li">Pressure: {{ pressure }} mmHg</li>
+            <li class="li">UV Index: {{ uv_index }}</li>
+            <li class="li is-card--bottom">Ozone: {{ ozone }}</li>
+          </ul>
+        </div>
       </div>
+    </div>
 
+  </div>
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <app-weather-hourly></app-weather-hourly>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <app-weather-daily></app-weather-daily>
+      </div>
     </div>
 
     <div class="row">
@@ -48,35 +69,17 @@
         <ul class="todo-list">
           <li class="todo-list__item complete">07/20/18 Add search bar after leaving home (currently have to go back to homepage to search again)</li>
           <li class="todo__list-item complete">07/20/18 If on the homepage, fill location input with last used value</li>
-          <li class="todo-list__item">Fix search bar style on windows machines</li>
-          <li class="todo-list__item">Add a chart for hourly weather data</li>
-          <li class="todo-list__item">Add Icons to data table</li>
-          <li class="todo-list__item">Graph the daily weather forecasts using D3 or charts.js (area chart)</li>
+          <li class="todo-list__item complete">07/21/18 Add a chart for hourly weather data</li>
+          <li class="todo-list__item complete">07/22/18Graph the daily weather forecasts using D3 or charts.js (area chart)</li>
           <li class="todo-list__item">Add a drop down list of previously searched locations from search bar</li>
+          <li class="todo-list__item">Fix search bar style on windows machines</li>
+          <li class="todo-list__item">Add Icons to data table</li>
           <li class="todo-list__item">UI / UX improvements</li>
 
         </ul>
       </div>
     </div>
-
   </div>
-
-  <div class="container">
-      <div class="row">
-          <div class="col-12">
-            <app-weather-hourly></app-weather-hourly>
-          </div>
-        </div>
-  </div>
-
-
-<div class="container">
-    <div class="row">
-        <div class="col-12">
-          <app-weather-daily></app-weather-daily>
-        </div>
-      </div>
-</div>
 
 
 
