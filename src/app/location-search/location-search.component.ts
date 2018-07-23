@@ -25,7 +25,7 @@ export class LocationSearchComponent implements OnInit {
         });
 
         // set location value
-        this.first_time = this.location.latitude ? false : true;
+        this.first_time = this.location.latitude === undefined;
         this.setLocationValue();
     }
 
@@ -36,6 +36,7 @@ export class LocationSearchComponent implements OnInit {
             this.weatherS.apiIp().subscribe(o => {
                 this.weatherS.parseIp(o);
             });
+            this.first_time = false;
         } else if (window.location.pathname === '/') {
             // if on the homepage, fill location input with last used value
             this.locationEl.nativeElement.value = `${this.location.city}, ${this.location.region_code}`;
