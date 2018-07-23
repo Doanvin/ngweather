@@ -1,0 +1,13 @@
+.line-chart{
+    margin-top: 1rem;
+  
+    &__wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 0;
+      margin: 3rem 0;
+    }
+  
+  }

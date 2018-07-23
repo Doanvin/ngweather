@@ -10,6 +10,10 @@ import * as d3 from "d3";
 
 
 
+//  d3.scaleTime d3.scaleLinear d3.line() d3.curveLinear d3.axisBottom d3.axisLeft d3.select
+// d3.min d3.max d3.domain d3.range
+
+
 @Component({
 	selector: 'app-weather-daily',
 	templateUrl: './weather-daily.component.html',
@@ -53,7 +57,6 @@ export class WeatherDailyComponent implements OnInit {
 			console.log(date, low_temp, high_temp);
 			temperatures.push({ date, low_temp, high_temp });
 		});
-		console.log(temperatures);
 		return temperatures;
 	}
 
@@ -62,8 +65,7 @@ export class WeatherDailyComponent implements OnInit {
 		let clientWidth:number = document.documentElement.clientWidth || document.body.clientWidth;
 		let margin, width, height;
 		if (clientWidth < 321) {
-			// poor UX but neccessary to fit screen
-			margin = { top: 6, right: 20, bottom: 20, left: 20 };
+			margin = { top: 6, right: 20, bottom: 20, left: 26 };
 			width = 260 - margin.left - margin.right;
 			height = 150 - margin.top - margin.bottom;
 
@@ -98,17 +100,23 @@ export class WeatherDailyComponent implements OnInit {
 			])
 			.range([height, 0]);
 
-		// create axis'
-		let xAxis = d3.axisBottom(xScale).ticks(8),
+		// create axes
+		let xAxis, yAxis;
+		if (clientWidth < 574) {
+			xAxis = d3.axisBottom(xScale).ticks(4),
 			yAxis = d3.axisLeft(yScale).ticks(6);
+		} else {
+			xAxis = d3.axisBottom(xScale).ticks(8),
+			yAxis = d3.axisLeft(yScale).ticks(6);
+		}
 
 		// create svg
-		let svg = d3.select('svg.line-chart')
+		let svg = d3.select('svg.line-chart--daily')
 			.attr('width', width + margin.left + margin.right)
 			.attr('height', height + margin.top + margin.bottom)
 			// create chart group
 			.append('g')
-			.attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
+			.attr('transform', `translate(${margin.left}, ${margin.top})`);
 
 		// create high and low temp lines
 		let low_line = d3.line()
@@ -133,22 +141,23 @@ export class WeatherDailyComponent implements OnInit {
 		// x-axis
 		svg.append('g')
 			.attr('class', 'axis axis--x')
-			.attr('transform', 'translate(0, ' + height + ')')
+			.attr('transform', `translate(0, ${height})`)
 			.style('text-anchor', 'middle')
 			.call(xAxis);
 
 		// y-axis
 		svg.append('g')
 			.attr('class', 'axis axis--y')
-			.call(yAxis)
-			.select('.tick:last-of-type')
-			.append('text')
-			// .attr('transform', 'rotate(-90)')
-			.attr('x', 160)
-			.attr('y', -25)
-			.style('fill', 'rgba(0, 0, 0, 0.9)')
-			.attr('dy', '.32em')
-			.text('Temperature Highs & Lows (°F)');
+			.call(yAxis);
+		
+			// HOW TO ADD LABEL TO AXIS
+			// .select('.tick:last-of-type')
+			// .append('text')
+			// .attr('x', 160)
+			// .attr('y', -25)
+			// .style('fill', 'rgba(0, 0, 0, 0.9)')
+			// .attr('dy', '.32em')
+			// .text('Temperature Highs & Lows (°F)')
 
 		// low_temp line
 		svg.append('path')

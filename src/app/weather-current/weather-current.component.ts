@@ -135,7 +135,7 @@ export class WeatherCurrentComponent implements OnInit {
         const location = this.weatherS.getLocation();
         console.log(location);
         console.log(this.city, this.region_code);
-        return location.city == this.city && location.region_code == this.region_code;
+        return location.city === this.city && location.region_code === this.region_code;
     }
 
 }
