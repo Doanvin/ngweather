@@ -1,8 +1,24 @@
+.gradient {
+    height: calc(100vh - 60px);
+    background: rgba(255, 255, 255, 0.8);
+}
+
 .welcome {
-    padding-top: 3rem;
     text-align: center;
+    padding: 1rem 0 3rem;
+
+    &__wrapper {
+        background-color: #fff;
+        margin-top: 1rem;
+    }
 
     &__title {
         font-size: 2rem;
+    }
+}
+
+@media screen and (min-width: 576px) {
+    .welcome__wrapper {
+         margin-top: 3rem;
     }
 }
