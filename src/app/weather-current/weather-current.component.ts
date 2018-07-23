@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { WeatherService } from '../weather.service';
-import { Observable } from 'rxjs';
+import { WeatherService } from '../services/weather.service';
 declare var Skycons: any;
 
 @Component({
@@ -11,6 +10,8 @@ declare var Skycons: any;
     styleUrls: ['./weather-current.component.scss']
 })
 export class WeatherCurrentComponent implements OnInit {
+    currently: object;
+
     city: string;
     region_code: string;
     summary: string;
@@ -33,34 +34,44 @@ export class WeatherCurrentComponent implements OnInit {
     ngOnInit() {
         // subscribe to url changes and 
         this.route.params
-        .subscribe(
-            params => {
-                this.city = params['city'];
-                this.region_code = params['region_code'];
-                this.initiationSequence();
-            }
-        );
+            .subscribe(
+                params => {
+                    this.city = params['city'];
+                    this.region_code = params['region_code'];
+                    this.initiationSequence();
+                }
+            );
+        // subscribe to forecast: currently
+        this.weatherS.currently$.subscribe(currently => {
+            this.currently = currently;
+            this.setCurrentlyVars();
+        });
 
-        const apiForecast$ = new Observable()
+        // subscribe to forecast: daily
+        this.weatherS.daily$.subscribe(daily => {
+            // sets local variables for forecast: daily
+            this.temp_low = daily[0]['temperatureLow'] || 0;
+            this.temp_high = daily[0]['temperatureHigh'] || 0;
+        });
     }
 
-    setLocalVariables() {
-        this.summary = this.weatherS.currently['summary'] || 'Error Retrieving Weather Info';
-        this.icon = this.weatherS.currently['icon'] || '';
-        this.temp = Math.round(this.weatherS.currently['temperature']) || 0;
-        this.temp_low = Math.round(this.weatherS.daily['data'][0]['temperatureLow']) || 0;
-        this.temp_high = Math.round(this.weatherS.daily['data'][0]['temperatureHigh']) || 0;
-        this.apparent_temp = Math.round(this.weatherS.currently['apparentTemperature']) || 0;
-        this.humidity = Math.round(this.weatherS.currently['humidity'] * 100) || 0;
-        this.precip_probability = Math.round(this.weatherS.currently['precipProbability'] * 100) || 0;
-        this.precip_type = this.weatherS.currently['precipType'] || 'precipitaion';
-        this.pressure = Math.round(this.weatherS.currently['pressure']) || 0;
-        this.wind_speed = Math.round(this.weatherS.currently['windSpeed']) || 0;
-        this.uv_index = this.weatherS.currently['uvIndex'] || 0;
-        this.ozone = Math.round(this.weatherS.currently['ozone']) || 0;
+    // sets local variables for forecast: currently
+    setCurrentlyVars() {
+        this.summary = this.currently['summary'] || 'Error Retrieving Weather Info';
+        this.icon = this.currently['icon'] || '';
+        this.temp = Math.round(this.currently['temperature']) || 0;
+        this.apparent_temp = Math.round(this.currently['apparentTemperature']) || 0;
+        this.humidity = Math.round(this.currently['humidity'] * 100) || 0;
+        this.precip_probability = Math.round(this.currently['precipProbability'] * 100) || 0;
+        this.precip_type = this.currently['precipType'] || 'precipitaion';
+        this.pressure = Math.round(this.currently['pressure']) || 0;
+        this.wind_speed = Math.round(this.currently['windSpeed']) || 0;
+        this.uv_index = this.currently['uvIndex'] || 0;
+        this.ozone = Math.round(this.currently['ozone']) || 0;
         this.startSkycons();
     }
 
+    // weather images
     startSkycons() {
         let skycons = new Skycons({ "color": "#D46A6A" });
         let icon = this.icon.toUpperCase().replace(/-/g, "_");
@@ -69,78 +80,18 @@ export class WeatherCurrentComponent implements OnInit {
     }
 
     initiationSequence() {
-        // check if we already have recent forecast data to avoid excessive api calls
-        const check = {
-            has_location: this.weatherS.hasLocation(),
-            location_matches: this.weatherS.location_matches,
-            within_ten_minutes: this.weatherS.withinTenMinutes(),
-            has_currently: this.weatherS.hasCurrently()
-        };
-
-        // if (check.has_location
-        //     && check.location_matches
-        //     && check.within_ten_minutes
-        //     && check.has_currently
-        // ) {
-        //     console.log(this.weatherS.hasLocation(),
-        //         this.locationMatches(),
-        //         this.weatherS.hasCurrently(),
-        //         this.weatherS.withinTenMinutes()
-        //     );
-        //     this.setLocalVariables();
-        //     console.log('We have recent weather data to use!');
-
-        //     // check for correct location but no recent data
-        // } else if (
-        //     check.has_location
-        //     && check.location_matches
-        //     && check.within_ten_minutes == false) {
-        //         console.log(this.weatherS.hasLocation(),
-        //         this.locationMatches(),
-        //         this.weatherS.hasCurrently(),
-        //         this.weatherS.withinTenMinutes()
-        //     );
-        //     this.weatherS.apiForecast()
-        //         .subscribe(
-        //             o => {
-        //                 console.log('darksky forecast api called from else if');
-        //                 this.weatherS.parseForecast(o);
-        //                 this.setLocalVariables();
-        //             }
-        //         );
-
-        //     // call location search api, call weather forecast api, parse data, and setup local variables for DOM use
-        // } else {
-            const city_region = `${this.city}, ${this.region_code}`;
-            console.log(this.weatherS.hasLocation(),
-                this.weatherS.location_matches,
-                this.weatherS.hasCurrently(),
-                this.weatherS.withinTenMinutes()
-            );
-            console.log(city_region);
-            this.weatherS.apiGeoLocation(city_region).subscribe(
-                res => {
-                    this.weatherS.parseLocation(res);
-                    this.weatherS.apiForecast()
-                        .subscribe(
-                            response => {
-                                console.log('darksky forecast api called from else');
-                                this.weatherS.parseForecast(response);
-                                this.setLocalVariables();
-                            }
-                        );
-
+        const city_region = `${this.city}, ${this.region_code}`;
+        this.weatherS.apiLocation(city_region).subscribe(res => {
+            this.weatherS.parseLocation(res);
+            this.weatherS.apiForecast()
+                .subscribe(response => {
+                    console.log('darksky forecast api called from else');
+                    this.weatherS.parseForecast(response);
                 }
-            );
-        // }
-    }
+                );
 
-    locationMatches() {
-        // NEEEDS FIXXXX
-        const location = this.weatherS.getLocation();
-        console.log(location);
-        console.log(this.city, this.region_code);
-        return location.city === this.city && location.region_code === this.region_code;
+        }
+        );
     }
 
 }

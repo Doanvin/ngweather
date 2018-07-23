@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
 
-import { WeatherService } from '../weather.service';
+import { WeatherService } from '../services/weather.service';
 
 import { scaleLinear } from 'd3-scale';
 import { select, style } from 'd3-selection';
@@ -20,25 +19,15 @@ import * as d3 from "d3";
 	styleUrls: ['./weather-daily.component.scss']
 })
 export class WeatherDailyComponent implements OnInit {
-	private daily: object[];
+	daily: object[];
 
-	constructor(private weatherS: WeatherService,
-		private router: Router) { }
+	constructor(private weatherS: WeatherService) { }
 
 	ngOnInit() {
-		this.daily = this.weatherS.daily['data'];
-		this.d3AreaChart(this.parseForD3LineChart());
-
-		// set the daily weather variable on every route change
-		this.router.events
-			.subscribe(
-				event => {
-					if (event instanceof NavigationEnd && window.location.pathname !== '/') {
-						this.daily = this.weatherS.daily['data'];
-						this.d3AreaChart(this.parseForD3LineChart());
-					}
-				}
-			)
+		this.weatherS.daily$.subscribe(daily => {
+			this.daily = daily;
+			this.d3AreaChart(this.parseForD3LineChart());
+		});
 	}
 
 	parseForD3LineChart() {
@@ -59,19 +48,19 @@ export class WeatherDailyComponent implements OnInit {
 
 	d3AreaChart(data: object[]) {
 		// sets the size of the chart responsively
-		let clientWidth:number = document.documentElement.clientWidth || document.body.clientWidth;
+		let clientWidth: number = document.documentElement.clientWidth || document.body.clientWidth;
 		let margin, width, height;
 		if (clientWidth < 321) {
-			margin = { top: 6, right: 20, bottom: 20, left: 26 };
+			margin = { top: 6, right: 20, bottom: 20, left: 32 };
 			width = 260 - margin.left - margin.right;
 			height = 150 - margin.top - margin.bottom;
 
-		} else if(clientWidth >= 321 && clientWidth < 574) {
-			margin = { top: 6, right: 20, bottom: 20, left: 20 };
+		} else if (clientWidth >= 321 && clientWidth < 574) {
+			margin = { top: 6, right: 20, bottom: 20, left: 32 };
 			width = 300 - margin.left - margin.right;
 			height = 160 - margin.top - margin.bottom;
 
-		} else if(clientWidth > 720 && clientWidth < 960) {
+		} else if (clientWidth > 720 && clientWidth < 960) {
 			margin = { top: 30, right: 40, bottom: 20, left: 40 };
 			width = 660 - margin.left - margin.right;
 			height = 333 - margin.top - margin.bottom;
@@ -79,11 +68,12 @@ export class WeatherDailyComponent implements OnInit {
 			margin = { top: 30, right: 40, bottom: 30, left: 26 };
 			width = 900 - margin.left - margin.right;
 			height = 470 - margin.top - margin.bottom;
-        } else if (clientWidth > 1200) {
-            margin = { top: 30, right: 40, bottom: 30, left: 26 };
+		} else if (clientWidth > 1200) {
+			margin = { top: 30, right: 40, bottom: 30, left: 26 };
 			width = 960 - margin.left - margin.right;
+			height = 500 - margin.top - margin.bottom;
 		}
-		
+
 
 		// parse date from data
 		const parseDate = d3.timeFormat('%b %e');
@@ -104,10 +94,10 @@ export class WeatherDailyComponent implements OnInit {
 		let xAxis, yAxis;
 		if (clientWidth < 574) {
 			xAxis = d3.axisBottom(xScale).ticks(4),
-			yAxis = d3.axisLeft(yScale).ticks(6);
+				yAxis = d3.axisLeft(yScale).ticks(6);
 		} else {
 			xAxis = d3.axisBottom(xScale).ticks(8),
-			yAxis = d3.axisLeft(yScale).ticks(6);
+				yAxis = d3.axisLeft(yScale).ticks(6);
 		}
 
 		// create svg
@@ -149,15 +139,15 @@ export class WeatherDailyComponent implements OnInit {
 		svg.append('g')
 			.attr('class', 'axis axis--y')
 			.call(yAxis);
-		
-			// HOW TO ADD LABEL TO AXIS
-			// .select('.tick:last-of-type')
-			// .append('text')
-			// .attr('x', 160)
-			// .attr('y', -25)
-			// .style('fill', 'rgba(0, 0, 0, 0.9)')
-			// .attr('dy', '.32em')
-			// .text('Temperature Highs & Lows (°F)')
+
+		// HOW TO ADD LABEL TO AXIS
+		// .select('.tick:last-of-type')
+		// .append('text')
+		// .attr('x', 160)
+		// .attr('y', -25)
+		// .style('fill', 'rgba(0, 0, 0, 0.9)')
+		// .attr('dy', '.32em')
+		// .text('Temperature Highs & Lows (°F)')
 
 		// low_temp line
 		svg.append('path')

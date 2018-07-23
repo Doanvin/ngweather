@@ -8,8 +8,8 @@ import { NavComponent } from './nav/nav.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { LocationSearchComponent } from './location-search/location-search.component';
 import { WeatherCurrentComponent } from './weather-current/weather-current.component';
-import { WeatherService } from './weather.service';
-import { StoreService } from './store.service';
+import { WeatherService } from './services/weather.service';
+import { StoreService } from './services/store.service';
 import { WeatherDailyComponent } from './weather-daily/weather-daily.component';
 import { WeatherHourlyComponent } from './weather-hourly/weather-hourly.component';
 
