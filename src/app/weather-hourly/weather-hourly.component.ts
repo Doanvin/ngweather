@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { WeatherService } from '../weather.service';
-import { ChartUtils } from '../utils/chart-utils';
 
 import * as d3 from "d3";
 
@@ -34,8 +33,7 @@ export class WeatherHourlyComponent implements OnInit {
                         this.temperatureData = this.parseForD3LineChart();
                         this.d3LineChart(this.temperatureData);
                     }
-                }, 
-                error => console.log('error in weather-hourly navigation end subscription')
+                }
             )
     }
 
@@ -51,7 +49,6 @@ export class WeatherHourlyComponent implements OnInit {
             let temp = Math.round(hour['temperature']);
             temperatures.push({ time, temp });
         })
-        console.log(temperatures);
 
         return temperatures;
     }
@@ -71,11 +68,11 @@ export class WeatherHourlyComponent implements OnInit {
 			height = 160 - margin.top - margin.bottom;
 
 		} else if(clientWidth > 720 && clientWidth < 960) {
-			margin = { top: 30, right: 20, bottom: 20, left: 20 };
+			margin = { top: 30, right: 20, bottom: 20, left: 26 };
 			width = 660 - margin.left - margin.right;
 			height = 333 - margin.top - margin.bottom;
 		} else if (clientWidth > 960) {
-			margin = { top: 30, right: 40, bottom: 30, left: 20 };
+			margin = { top: 30, right: 40, bottom: 30, left: 26 };
 			width = 960 - margin.left - margin.right;
 			height = 500 - margin.top - margin.bottom;
         }
@@ -95,11 +92,23 @@ export class WeatherHourlyComponent implements OnInit {
         // create axes
         let xAxis, yAxis;
         if (clientWidth < 574) {
-            xAxis = d3.axisBottom(xScale). ticks(4),
-            yAxis = d3.axisLeft(yScale).ticks(6);
+            xAxis = d3.axisBottom(xScale). ticks(4)
+            .tickSizeInner(-height)
+            .tickSizeOuter(6)
+            .tickPadding(10);
+            yAxis = d3.axisLeft(yScale).ticks(6)
+            .tickSizeInner(-width)
+            .tickSizeOuter(6)
+            .tickPadding(10);
         } else {
-            xAxis = d3.axisBottom(xScale),
-            yAxis = d3.axisLeft(yScale).ticks(6);
+            xAxis = d3.axisBottom(xScale)
+            .tickSizeInner(-height)
+            .tickSizeOuter(6)
+            .tickPadding(10);
+            yAxis = d3.axisLeft(yScale).ticks(6)
+            .tickSizeInner(-width)
+            .tickSizeOuter(6)
+            .tickPadding(10);
         }
 
 
@@ -147,7 +156,7 @@ export class WeatherHourlyComponent implements OnInit {
             .attr('class', 'line')
             .attr('d', line)
             .style('fill', 'none')
-            .style('stroke', 'rgba(8, 97, 156, 0.8)')
+            .style('stroke', 'url(#gradient1)')
             .style('stroke-width', '3px')
             .style('shape-rendering', 'optimzeSpeed');
 
@@ -169,11 +178,16 @@ export class WeatherHourlyComponent implements OnInit {
                 .append("circle")
                 .attr("cx", d => xScale(d['time']))
                 .attr("cy", d => yScale(d['temp']))
-                .attr("r", 4)
-                .style('fill', 'rgba(0, 0, 0, 0.7)');
+                .attr("r", 3)
+                .style('fill', 'rgba(0, 0, 0, 0.8)');
         }
         
-        
+        // style hacks to override d3/angular inline styles
+        // THERE'S GOTTA BE A BETTER WAY!!!
+        const ticks = document.querySelectorAll('g.axis g.tick line');
+        Array.from(ticks).forEach( tick => {
+            tick['style']['stroke'] = 'rgba(0, 0, 0, 0.15)';
+        });
 
     }
 

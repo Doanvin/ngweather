@@ -27,7 +27,6 @@ export class WeatherDailyComponent implements OnInit {
 
 	ngOnInit() {
 		this.daily = this.weatherS.daily['data'];
-		console.log(this.daily);
 		this.d3AreaChart(this.parseForD3LineChart());
 
 		// set the daily weather variable on every route change
@@ -36,7 +35,6 @@ export class WeatherDailyComponent implements OnInit {
 				event => {
 					if (event instanceof NavigationEnd && window.location.pathname !== '/') {
 						this.daily = this.weatherS.daily['data'];
-						console.log(this.daily);
 						this.d3AreaChart(this.parseForD3LineChart());
 					}
 				}
@@ -54,7 +52,6 @@ export class WeatherDailyComponent implements OnInit {
 			const date: Date = new Date(day['time'] * 1000);
 			const low_temp: number = Math.round(day['temperatureMin']);
 			const high_temp: number = Math.round(day['temperatureMax']);
-			console.log(date, low_temp, high_temp);
 			temperatures.push({ date, low_temp, high_temp });
 		});
 		return temperatures;
@@ -180,7 +177,7 @@ export class WeatherDailyComponent implements OnInit {
 		svg.append('path')
 			.attr('class', 'area')
 			.attr('d', area)
-			.style('fill', 'url(#gradient1)');
+			.style('fill', 'url(#gradient2)');
 
 		svg.selectAll("circle.low-temp")
 			.data(data)
@@ -208,7 +205,8 @@ export class WeatherDailyComponent implements OnInit {
 				.append('text')
 				.text(d => d['low_temp'] + ' °F')
 				.attr("x", d => xScale(d['date']))
-				.attr("y", d => yScale(d['low_temp']) - 10);
+				.attr("y", d => yScale(d['low_temp']) - 10)
+				.attr('title', d => `${parseDate(d['date'])}, ${d['low_temp']}`);
 
 			// high_temp labels
 			svg.selectAll('text.high-temp')
@@ -217,7 +215,8 @@ export class WeatherDailyComponent implements OnInit {
 				.append('text')
 				.text(d => d['high_temp'] + ' °F')
 				.attr("x", d => xScale(d['date']))
-				.attr("y", d => yScale(d['high_temp']) - 10);
+				.attr("y", d => yScale(d['high_temp']) - 10)
+				.attr('title', d => `${parseDate(d['date'])}, ${d['high_temp']}`);
 		}
 	}
 
