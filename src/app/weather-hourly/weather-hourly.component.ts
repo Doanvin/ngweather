@@ -188,11 +188,14 @@ export class WeatherHourlyComponent implements OnInit {
         
         // style hacks to override d3/angular inline styles
         // THERE'S GOTTA BE A BETTER WAY!!!
-        const ticks = document.querySelectorAll('g.axis g.tick line');
-        Array.from(ticks).forEach( tick => {
+        const tickElements = document.querySelectorAll('g.axis g.tick line');
+        // convert nodelist to array
+        let ticks = [];
+        for(let i = tickElements.length; i--; ticks.unshift(tickElements[i]));
+        // apply styles to each tick
+        ticks.forEach( tick => {
             tick['style']['stroke'] = 'rgba(0, 0, 0, 0.15)';
         });
-
     }
 
 }
