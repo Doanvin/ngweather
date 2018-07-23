@@ -2,11 +2,11 @@
     <div class="form-row justify-content-center">
       <div class="form-group mb-0 col-12 col-sm-8 col-md-8 offset-lg-2 col-lg-6">
         <label for="location" class="form-control sr-only sr-only-focusable">Location</label>
-        <input #location (keyup.enter)="searchButton.click()" type="text" name="location" id="location-search" placeholder="Enter your Location">
+        <input #locationEl (keyup.enter)="searchButton.click()" type="text" name="location" id="location-search" placeholder="Enter your Location">
       </div>
       <div class="form-group mb-0 col-12 col-sm-4 col-md-4 col-lg-2">
         <button #searchButton id="search-button" type="button" class="form-control btn btn-dark btn-block" 
-                (click)="searchCityZip(location.value)">Search</button>
+                (click)="searchCityZip(locationEl.value)">Search</button>
       </div>
     </div>
 </form>

@@ -29,7 +29,7 @@ export class WeatherCurrentComponent implements OnInit {
     visibility: number;
     ozone: number;
 
-    constructor(private route: ActivatedRoute, public weatherS: WeatherService) { }
+    constructor(private route: ActivatedRoute, private weatherS: WeatherService) { }
 
     ngOnInit() {
         // subscribe to url changes and 
@@ -83,15 +83,11 @@ export class WeatherCurrentComponent implements OnInit {
         const city_region = `${this.city}, ${this.region_code}`;
         this.weatherS.apiLocation(city_region).subscribe(res => {
             this.weatherS.parseLocation(res);
-            this.weatherS.apiForecast()
-                .subscribe(response => {
-                    console.log('darksky forecast api called from else');
-                    this.weatherS.parseForecast(response);
-                }
-                );
-
-        }
-        );
+            this.weatherS.apiForecast().subscribe(response => {
+                console.log('darksky forecast api called');
+                this.weatherS.parseForecast(response);
+            });
+        });
     }
 
 }

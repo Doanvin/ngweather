@@ -1,32 +1,29 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
 
 import { StoreService } from './store.service';
 import { Location } from '../models/location.model';
 import { environment } from '../../environments/environment';
-import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class WeatherService {
     private locationSource = new BehaviorSubject<Location>(this.store.get('location') || '');
-    currentLocation = this.locationSource.asObservable();
+    location$ = this.locationSource.asObservable();
     location: Location;
     private currentlySource = new BehaviorSubject<object>(this.store.get('currently') || {});
     currently$ = this.currentlySource.asObservable();
-    private hourlySource = new BehaviorSubject<object[]>(this.store.get('hourly') || {});
+    private hourlySource = new BehaviorSubject<object[]>(this.store.get('hourly') || [{}]);
     hourly$ = this.hourlySource.asObservable();
-    private dailySource = new BehaviorSubject<object[]>(this.store.get('daily') || {});
+    private dailySource = new BehaviorSubject<object[]>(this.store.get('daily') || [{}]);
     daily$ = this.dailySource.asObservable();
-    private timeSource = new BehaviorSubject<Date>(this.store.get('time') || {});
+    private timeSource = new BehaviorSubject<Date>(this.store.get('time') || new Date());
     location_matches: boolean;
 
-    constructor(public store: StoreService,
-        public http: HttpClient,
-        public router: Router) {
-        this.currentLocation.subscribe(location => this.location = location);
+    constructor(private store: StoreService, private http: HttpClient) {
+        this.location$.subscribe(location => this.location = location);
         this.location_matches = false;
     }
 

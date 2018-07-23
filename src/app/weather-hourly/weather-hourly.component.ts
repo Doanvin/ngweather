@@ -10,7 +10,7 @@ import * as d3 from "d3";
 })
 export class WeatherHourlyComponent implements OnInit {
     hourly: object[];
-    private temperatureData: Object[];
+    private temperatureData: object[];
     private lessThanMd: boolean;
 
     constructor(private weatherS: WeatherService) { }
@@ -20,7 +20,7 @@ export class WeatherHourlyComponent implements OnInit {
         this.weatherS.hourly$.subscribe(hourly => {
             this.hourly = hourly;
             let svg = d3.select('svg.line-chart--hourly');
-		    svg.selectAll('g').remove();
+            svg.selectAll('g').remove();
             this.temperatureData = this.parseForD3LineChart();
             this.d3LineChart(this.temperatureData);
         });
