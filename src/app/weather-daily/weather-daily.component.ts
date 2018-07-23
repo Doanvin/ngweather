@@ -26,6 +26,8 @@ export class WeatherDailyComponent implements OnInit {
 	ngOnInit() {
 		this.weatherS.daily$.subscribe(daily => {
 			this.daily = daily;
+			let svg = d3.select('svg.line-chart--daily');
+			svg.selectAll('g').remove();
 			this.d3AreaChart(this.parseForD3LineChart());
 		});
 	}

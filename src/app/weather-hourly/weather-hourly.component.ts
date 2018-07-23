@@ -19,7 +19,8 @@ export class WeatherHourlyComponent implements OnInit {
         // subscribe to forecast data: hourly
         this.weatherS.hourly$.subscribe(hourly => {
             this.hourly = hourly;
-            console.log(hourly);
+            let svg = d3.select('svg.line-chart--hourly');
+		    svg.selectAll('g').remove();
             this.temperatureData = this.parseForD3LineChart();
             this.d3LineChart(this.temperatureData);
         });

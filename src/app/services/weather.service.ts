@@ -11,16 +11,16 @@ import { BehaviorSubject } from 'rxjs';
     providedIn: 'root'
 })
 export class WeatherService {
-    private locationSource = new BehaviorSubject<any>(this.store.get('location') || '');
+    private locationSource = new BehaviorSubject<Location>(this.store.get('location') || '');
     currentLocation = this.locationSource.asObservable();
     location: Location;
-    private currentlySource = new BehaviorSubject<any>(this.store.get('currently') || {});
+    private currentlySource = new BehaviorSubject<object>(this.store.get('currently') || {});
     currently$ = this.currentlySource.asObservable();
-    private hourlySource = new BehaviorSubject<any>(this.store.get('hourly') || {});
+    private hourlySource = new BehaviorSubject<object[]>(this.store.get('hourly') || {});
     hourly$ = this.hourlySource.asObservable();
-    private dailySource = new BehaviorSubject<any>(this.store.get('daily') || {});
+    private dailySource = new BehaviorSubject<object[]>(this.store.get('daily') || {});
     daily$ = this.dailySource.asObservable();
-    private timeSource = new BehaviorSubject<any>(this.store.get('time') || {});
+    private timeSource = new BehaviorSubject<Date>(this.store.get('time') || {});
     location_matches: boolean;
 
     constructor(public store: StoreService,
