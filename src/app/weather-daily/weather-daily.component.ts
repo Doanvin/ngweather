@@ -72,13 +72,16 @@ export class WeatherDailyComponent implements OnInit {
 			height = 160 - margin.top - margin.bottom;
 
 		} else if(clientWidth > 720 && clientWidth < 960) {
-			margin = { top: 30, right: 20, bottom: 20, left: 20 };
+			margin = { top: 30, right: 40, bottom: 20, left: 40 };
 			width = 660 - margin.left - margin.right;
 			height = 333 - margin.top - margin.bottom;
-		} else if (clientWidth > 960) {
-			margin = { top: 30, right: 40, bottom: 30, left: 20 };
+		} else if (clientWidth > 960 && clientWidth < 1200) {
+			margin = { top: 30, right: 40, bottom: 30, left: 26 };
+			width = 900 - margin.left - margin.right;
+			height = 470 - margin.top - margin.bottom;
+        } else if (clientWidth > 1200) {
+            margin = { top: 30, right: 40, bottom: 30, left: 26 };
 			width = 960 - margin.left - margin.right;
-			height = 500 - margin.top - margin.bottom;
 		}
 		
 
