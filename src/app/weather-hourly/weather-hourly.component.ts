@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { WeatherService } from '../services/weather.service';
 
+import { getChartSize } from '../utils/chart-utils';
 import * as d3 from "d3";
 
 @Component({
@@ -11,7 +12,6 @@ import * as d3 from "d3";
 export class WeatherHourlyComponent implements OnInit {
     hourly: object[];
     private temperatureData: object[];
-    private lessThanMd: boolean;
 
     constructor(private weatherS: WeatherService) { }
 
@@ -19,16 +19,16 @@ export class WeatherHourlyComponent implements OnInit {
         // subscribe to forecast data: hourly
         this.weatherS.hourly$.subscribe(hourly => {
             this.hourly = hourly;
-            let svg = d3.select('svg.line-chart--hourly');
-            svg.selectAll('g').remove();
-            this.temperatureData = this.parseForD3LineChart();
-            this.d3LineChart(this.temperatureData);
+            this.resetD3LineChart();
         });
 
-        let client_width = document.documentElement.clientWidth || document.body.clientWidth;
-        this.lessThanMd = client_width <= 767;
-        this.temperatureData = this.parseForD3LineChart();
-        this.d3LineChart(this.temperatureData);
+        window.addEventListener('resize', this.resetD3LineChart.bind(this));
+    }
+
+    resetD3LineChart() {
+        let svg = d3.select('svg.line-chart--hourly');
+        svg.selectAll('g').remove();
+        this.d3LineChart(this.parseForD3LineChart());
     }
 
     parseForD3LineChart() {
@@ -50,30 +50,10 @@ export class WeatherHourlyComponent implements OnInit {
     d3LineChart(data: object[]) {
         // set chart sizes
         let clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
-        let margin, width, height;
-        if (clientWidth < 321) {
-            margin = { top: 6, right: 20, bottom: 20, left: 32 };
-            width = 260 - margin.left - margin.right;
-            height = 150 - margin.top - margin.bottom;
-
-        } else if (clientWidth >= 321 && clientWidth < 574) {
-            margin = { top: 6, right: 20, bottom: 20, left: 32 };
-            width = 300 - margin.left - margin.right;
-            height = 160 - margin.top - margin.bottom;
-
-        } else if (clientWidth > 720 && clientWidth < 960) {
-            margin = { top: 30, right: 40, bottom: 20, left: 40 };
-            width = 660 - margin.left - margin.right;
-            height = 333 - margin.top - margin.bottom;
-        } else if (clientWidth > 960 && clientWidth < 1200) {
-            margin = { top: 30, right: 40, bottom: 30, left: 26 };
-            width = 900 - margin.left - margin.right;
-            height = 470 - margin.top - margin.bottom;
-        } else if (clientWidth > 1200) {
-            margin = { top: 30, right: 40, bottom: 30, left: 26 };
-            width = 960 - margin.left - margin.right;
-            height = 500 - margin.top - margin.bottom;
-        }
+        let chart = getChartSize(clientWidth);
+        const {margin} = chart,
+              {width} = chart,
+              {height} = chart;
 
         // parse date from data
         const parseDate = d3.timeFormat('%I %p');
