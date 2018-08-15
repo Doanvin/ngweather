@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { WeatherService } from '../services/weather.service';
 
 import { getChartSize } from '../utils/chart-utils';
+import { optimizedResize } from '../utils/optimized-resize';
 import * as d3 from "d3";
 
 @Component({
@@ -22,7 +23,7 @@ export class WeatherHourlyComponent implements OnInit {
             this.resetD3LineChart();
         });
 
-        window.addEventListener('resize', this.resetD3LineChart.bind(this));
+        optimizedResize.add(this.resetD3LineChart.bind(this));
     }
 
     resetD3LineChart() {

@@ -7,6 +7,7 @@ import { getChartSize } from '../utils/chart-utils';
 // import { select, style } from 'd3-selection';
 // global.d.ts
 import * as d3 from "d3";
+import { optimizedResize } from '../utils/optimized-resize';
 
 
 
@@ -30,7 +31,7 @@ export class WeatherDailyComponent implements OnInit {
 			this.resetD3LineChart();
 		});
 
-		window.addEventListener('resize', this.resetD3LineChart.bind(this));
+		optimizedResize.add(this.resetD3LineChart.bind(this));
 	}
 
 	resetD3LineChart() {
