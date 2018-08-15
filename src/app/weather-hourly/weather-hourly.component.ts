@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WeatherService } from '../services/weather.service';
+import { Subscription } from 'rxjs';
 
 import { getChartSize } from '../utils/chart-utils';
 import { optimizedResize } from '../utils/optimized-resize';
@@ -10,7 +11,8 @@ import * as d3 from "d3";
     templateUrl: './weather-hourly.component.html',
     styleUrls: ['./weather-hourly.component.scss']
 })
-export class WeatherHourlyComponent implements OnInit {
+export class WeatherHourlyComponent implements OnInit, OnDestroy {
+    hourly$: Subscription;
     hourly: object[];
     private temperatureData: object[];
 
@@ -18,7 +20,7 @@ export class WeatherHourlyComponent implements OnInit {
 
     ngOnInit() {
         // subscribe to forecast data: hourly
-        this.weatherS.hourly$.subscribe(hourly => {
+        this.hourly$ = this.weatherS.hourly$.subscribe(hourly => {
             this.hourly = hourly;
             this.resetD3LineChart();
         });
@@ -171,6 +173,10 @@ export class WeatherHourlyComponent implements OnInit {
         ticks.forEach(tick => {
             tick['style']['stroke'] = 'rgba(0, 0, 0, 0.15)';
         });
+    }
+
+    ngOnDestroy() {
+        this.hourly$.unsubscribe();
     }
 
 }

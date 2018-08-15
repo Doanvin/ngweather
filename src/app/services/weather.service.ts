@@ -45,6 +45,8 @@ export class WeatherService {
 
         if (location.latitude === 0 || location.longitude === 0) {
             console.error('error using auto geographic lookup');
+        } else if (location.city === undefined || location.region_code ===undefined) {
+            console.error('error using auto geographic lookup');
         } else {
             this.locationSource.next(location);
             this.store.set('location', location);

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { WeatherService } from '../services/weather.service';
 
@@ -8,6 +8,7 @@ import { getChartSize } from '../utils/chart-utils';
 // global.d.ts
 import * as d3 from "d3";
 import { optimizedResize } from '../utils/optimized-resize';
+import { Subscription } from 'rxjs';
 
 
 
@@ -20,13 +21,14 @@ import { optimizedResize } from '../utils/optimized-resize';
 	templateUrl: './weather-daily.component.html',
 	styleUrls: ['./weather-daily.component.scss']
 })
-export class WeatherDailyComponent implements OnInit {
+export class WeatherDailyComponent implements OnInit, OnDestroy {
+	daily$: Subscription;
 	daily: object[];
 
 	constructor(private weatherS: WeatherService) { }
 
 	ngOnInit() {
-		this.weatherS.daily$.subscribe(daily => {
+		this.daily$ = this.weatherS.daily$.subscribe(daily => {
 			this.daily = daily;
 			this.resetD3LineChart();
 		});
@@ -200,6 +202,10 @@ export class WeatherDailyComponent implements OnInit {
 				.attr("y", d => yScale(d['high_temp']) - 10)
 				.attr('title', d => `${parseDate(d['date'])}, ${d['high_temp']}`);
 		}
+	}
+
+	ngOnDestroy() {
+		this.daily$.unsubscribe();
 	}
 
 }

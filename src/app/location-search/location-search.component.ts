@@ -1,17 +1,19 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Location } from '../models/location.model';
 import { WeatherService } from '../services/weather.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-location-search',
     templateUrl: './location-search.component.html',
     styleUrls: ['./location-search.component.scss']
 })
-export class LocationSearchComponent implements OnInit {
+export class LocationSearchComponent implements OnInit, OnDestroy {
     @ViewChild('locationEl') private locationEl: ElementRef<HTMLInputElement>;
     first_time: boolean;
+    location$: Subscription;
     location: Location;
 
 
@@ -19,7 +21,7 @@ export class LocationSearchComponent implements OnInit {
 
     ngOnInit() {
         // subscribe to location changes
-        this.weatherS.location$.subscribe(location => {
+        this.location$ = this.weatherS.location$.subscribe(location => {
             this.location = location;
             this.setLocationValue();
         });
@@ -62,6 +64,10 @@ export class LocationSearchComponent implements OnInit {
             this.weatherS.parseLocation(o);
             this.searchLatLong();
         });
+    }
+
+    ngOnDestroy() {
+        this.location$.unsubscribe();
     }
 
 }

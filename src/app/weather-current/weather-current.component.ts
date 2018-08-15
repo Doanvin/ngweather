@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { WeatherService } from '../services/weather.service';
 declare var Skycons: any;
@@ -9,8 +10,14 @@ declare var Skycons: any;
     templateUrl: './weather-current.component.html',
     styleUrls: ['./weather-current.component.scss']
 })
-export class WeatherCurrentComponent implements OnInit {
+export class WeatherCurrentComponent implements OnInit, OnDestroy {
     currently: object;
+    location: {city: string, region_code: string};
+
+    location$: Subscription;
+    currently$: Subscription;
+    daily$: Subscription;    
+
 
     city: string;
     region_code: string;
@@ -32,6 +39,11 @@ export class WeatherCurrentComponent implements OnInit {
     constructor(private route: ActivatedRoute, private weatherS: WeatherService) { }
 
     ngOnInit() {
+        this.setLocation(this.weatherS.location);
+        // subscribe to location
+        this.location$ = this.weatherS.location$.subscribe(location => {
+            this.setLocation(location);
+        });
         // subscribe to url changes and 
         this.route.params
             .subscribe(
@@ -42,17 +54,26 @@ export class WeatherCurrentComponent implements OnInit {
                 }
             );
         // subscribe to forecast: currently
-        this.weatherS.currently$.subscribe(currently => {
+        this.currently$ = this.weatherS.currently$.subscribe(currently => {
             this.currently = currently;
             this.setCurrentlyVars();
         });
 
         // subscribe to forecast: daily
-        this.weatherS.daily$.subscribe(daily => {
+        this.daily$ = this.weatherS.daily$.subscribe(daily => {
             // sets local variables for forecast: daily
             this.temp_low = Math.round(daily[0]['temperatureLow']) || 0;
             this.temp_high = Math.round(daily[0]['temperatureHigh']) || 0;
         });
+    }
+
+    // sets local location variables
+    setLocation(location) {
+        if (location.city === undefined || location.region_code === undefined) {
+            this.location = {city: '', region_code: ''}
+        } else {
+            this.location = {city: location.city, region_code: location.region_code}
+        }
     }
 
     // sets local variables for forecast: currently
@@ -80,14 +101,29 @@ export class WeatherCurrentComponent implements OnInit {
     }
 
     initiationSequence() {
-        const city_region = `${this.city}, ${this.region_code}`;
-        this.weatherS.apiLocation(city_region).subscribe(res => {
-            this.weatherS.parseLocation(res);
+        // if city and state match route params don't make another location api call
+        console.log(this.location.city, this.city, this.location.region_code, this.region_code);
+        if (this.location.city === this.city && this.location.region_code === this.region_code) {
             this.weatherS.apiForecast().subscribe(response => {
-                console.log('darksky forecast api called');
+                console.log('darksky forecast api called from if');
                 this.weatherS.parseForecast(response);
             });
-        });
+        } else {
+            const city_region = `${this.city}, ${this.region_code}`;
+            this.weatherS.apiLocation(city_region).subscribe(res => {
+                this.weatherS.parseLocation(res);
+                this.weatherS.apiForecast().subscribe(response => {
+                    console.log('darksky forecast api called from else');
+                    this.weatherS.parseForecast(response);
+                });
+            });
+        }
+    }
+
+    ngOnDestroy() {
+        this.location$.unsubscribe();
+        this.currently$.unsubscribe();
+        this.daily$.unsubscribe();
     }
 
 }
