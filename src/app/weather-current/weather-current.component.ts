@@ -14,7 +14,6 @@ export class WeatherCurrentComponent implements OnInit, OnDestroy {
     currently: object;
     location: {city: string, region_code: string};
 
-    location$: Subscription;
     currently$: Subscription;
     daily$: Subscription;    
 
@@ -39,11 +38,6 @@ export class WeatherCurrentComponent implements OnInit, OnDestroy {
     constructor(private route: ActivatedRoute, private weatherS: WeatherService) { }
 
     ngOnInit() {
-        this.setLocation(this.weatherS.location);
-        // subscribe to location
-        this.location$ = this.weatherS.location$.subscribe(location => {
-            this.setLocation(location);
-        });
         // subscribe to url changes and 
         this.route.params
             .subscribe(
@@ -65,15 +59,6 @@ export class WeatherCurrentComponent implements OnInit, OnDestroy {
             this.temp_low = Math.round(daily[0]['temperatureLow']) || 0;
             this.temp_high = Math.round(daily[0]['temperatureHigh']) || 0;
         });
-    }
-
-    // sets local location variables
-    setLocation(location) {
-        if (location.city === undefined || location.region_code === undefined) {
-            this.location = {city: '', region_code: ''}
-        } else {
-            this.location = {city: location.city, region_code: location.region_code}
-        }
     }
 
     // sets local variables for forecast: currently
@@ -102,8 +87,7 @@ export class WeatherCurrentComponent implements OnInit, OnDestroy {
 
     initiationSequence() {
         // if city and state match route params don't make another location api call
-        console.log(this.location.city, this.city, this.location.region_code, this.region_code);
-        if (this.location.city === this.city && this.location.region_code === this.region_code) {
+        if (this.weatherS.location_matches) {
             this.weatherS.apiForecast().subscribe(response => {
                 console.log('darksky forecast api called from if');
                 this.weatherS.parseForecast(response);
@@ -121,7 +105,6 @@ export class WeatherCurrentComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.location$.unsubscribe();
         this.currently$.unsubscribe();
         this.daily$.unsubscribe();
     }

@@ -69,7 +69,7 @@ export class WeatherService {
             longitude: o['query']['results']['channel']['item']['long'],
             time: new Date(o['query']['created'])
         };
-        this.location_matches = this.location === location;
+        this.location_matches = JSON.stringify(this.location) === JSON.stringify(location);
         this.locationSource.next(location);
         this.timeSource.next(location.time);
         this.store.bulkSet([
