@@ -20,6 +20,7 @@ export class WeatherService {
     private dailySource = new BehaviorSubject<object[]>(this.store.get('daily') || [{}]);
     daily$ = this.dailySource.asObservable();
     private timeSource = new BehaviorSubject<Date>(this.store.get('time') || new Date());
+    time$ = this.timeSource.asObservable();
     location_matches: boolean;
 
     constructor(private store: StoreService, private http: HttpClient) {

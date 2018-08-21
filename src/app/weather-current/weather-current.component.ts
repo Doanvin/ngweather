@@ -13,7 +13,9 @@ declare var Skycons: any;
 export class WeatherCurrentComponent implements OnInit, OnDestroy {
     currently: object;
     location: {city: string, region_code: string};
+    time: Date;
 
+    time$: Subscription;
     currently$: Subscription;
     daily$: Subscription;    
 
@@ -38,6 +40,8 @@ export class WeatherCurrentComponent implements OnInit, OnDestroy {
     constructor(private route: ActivatedRoute, private weatherS: WeatherService) { }
 
     ngOnInit() {
+        // subscribe to time of last api call
+        this.time$ = this.weatherS.time$.subscribe(time => this.time = time);
         // subscribe to url changes and 
         this.route.params
             .subscribe(
@@ -86,10 +90,9 @@ export class WeatherCurrentComponent implements OnInit, OnDestroy {
     }
 
     initiationSequence() {
-        // if city and state match route params don't make another location api call
-        if (this.weatherS.location_matches) {
+        // if location service called within 5 seconds don't make another location api call
+        if (this.withinFiveSeconds()) {
             this.weatherS.apiForecast().subscribe(response => {
-                console.log('darksky forecast api called from if');
                 this.weatherS.parseForecast(response);
             });
         } else {
@@ -97,10 +100,19 @@ export class WeatherCurrentComponent implements OnInit, OnDestroy {
             this.weatherS.apiLocation(city_region).subscribe(res => {
                 this.weatherS.parseLocation(res);
                 this.weatherS.apiForecast().subscribe(response => {
-                    console.log('darksky forecast api called from else');
                     this.weatherS.parseForecast(response);
                 });
             });
+        }
+    }
+
+    withinFiveSeconds() {
+        let now = Date.now();
+        let duration = 1000*5;
+        if (this.time.valueOf() - now < duration) {
+            return true;
+        } else {
+            return false;
         }
     }
 
